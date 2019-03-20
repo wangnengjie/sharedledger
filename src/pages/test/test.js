@@ -1,13 +1,9 @@
+import "@tarojs/async-await";
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Navigator, Button } from "@tarojs/components";
-import "./index.scss";
 import events, { globalData } from "../../utils/events";
 
-export default class Index extends Component {
-  config = {
-    navigationBarTitleText: "首页"
-  };
-
+export default class Test extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,18 +11,13 @@ export default class Index extends Component {
     };
     this.handleTest = this.handleTest.bind(this);
   }
-
   componentWillMount() {
     events.on("test", this.handleTest);
   }
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
-  componentDidShow() {}
-
-  componentDidHide() {}
+  componentWillUnmount() {
+    events.off("test", this.handleTest);
+  }
 
   handleTest(msg) {
     console.log(this, msg);
@@ -34,17 +25,18 @@ export default class Index extends Component {
   }
 
   onClick() {
-    events.trigger("test", "haha");
+    events.trigger("test", "this is a test!!!");
   }
 
   render() {
     const msg = this.state.msg;
-    console.log(this.state);
     return (
-      <View className='index'>
+      <View>
         <Text>{msg}</Text>
         <Button onClick={this.onClick}>广播</Button>
-        <Navigator url='/pages/test/test'>test</Navigator>
+        <Navigator openType='switchTab' url='/pages/index/index'>
+          卸载返回
+        </Navigator>
       </View>
     );
   }

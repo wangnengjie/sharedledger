@@ -1,7 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
-import Index from './pages/index'
-
-import './app.scss'
+import "@tarojs/async-await";
+import Taro, { Component } from "@tarojs/taro";
+import Index from "./pages/index";
+import { globalData } from "./utils/events";
+import "./app.scss";
+import { resolve } from "uri-js";
+import { reject } from "when";
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -10,50 +13,44 @@ import './app.scss'
 // }
 
 class App extends Component {
-
   config = {
-    pages: [
-      'pages/index/index',
-      'pages/my/my'
-    ],
+    pages: ["pages/index/index", "pages/my/my", "pages/test/test"],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      backgroundTextStyle: "light",
+      navigationBarBackgroundColor: "#fff",
+      navigationBarTitleText: "WeChat",
+      navigationBarTextStyle: "black"
     },
     tabBar: {
-      color: '#000000',
-      selectedColor: '#000000',
-      borderStyle: 'black',
+      color: "#000000",
+      selectedColor: "#000000",
+      borderStyle: "black",
       list: [
         {
-          pagePath: 'pages/index/index',
-          text: '首页'
+          pagePath: "pages/index/index",
+          text: "首页"
         },
         {
-          pagePath: 'pages/my/my',
-          text: '我的'
+          pagePath: "pages/my/my",
+          text: "我的"
         }
       ]
     }
-  }
+  };
 
-  componentDidMount() { }
+  componentDidMount() {}
 
-  componentDidShow() { }
+  componentDidShow() {}
 
-  componentDidHide() { }
+  componentDidHide() {}
 
-  componentDidCatchError() { }
+  componentDidCatchError() {}
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render() {
-    return (
-      <Index />
-    )
+    return <Index />;
   }
 }
 
-Taro.render(<App />, document.getElementById('app'))
+Taro.render(<App />, document.getElementById("app"));

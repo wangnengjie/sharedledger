@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
-import events from '../../utils/events'
+import Taro, { Component } from "@tarojs/taro";
+import { View, Text } from "@tarojs/components";
+import events from "../../utils/events";
 
 export default class My extends Component {
   constructor(props) {
@@ -8,13 +8,21 @@ export default class My extends Component {
     this.state = {};
   }
   componentWillMount() {
-    events.on('test', msg => {
-      console.log(msg);
-    })
-    events.trigger('test', 'this is a test!!!')
+    // events.on("test", test);
+    // events.trigger("test", "this is a test!!!");
+    // events.off("test",test.bind(this));
+    // events.trigger("test", "this is a test!!!");
   }
 
-  render(){
-    return <View>???<Text>???</Text></View>
+  componentWillUnmount() {
+    // events.off("test",test);
+  }
+
+  render() {
+    return (
+      <View>
+        ???<Text>???</Text>
+      </View>
+    );
   }
 }
