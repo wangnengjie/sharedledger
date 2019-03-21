@@ -3,7 +3,8 @@ import { View, Text, Navigator, Button } from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
 
-export default class Index extends Component {
+class Index extends Component {
+  
   config = {
     navigationBarTitleText: "首页"
   };
@@ -14,10 +15,11 @@ export default class Index extends Component {
       msg: globalData.msg
     };
     this.handleTest = this.handleTest.bind(this);
+    events.on("test", this.handleTest);
   }
 
   componentWillMount() {
-    events.on("test", this.handleTest);
+    // this.setState({msg:globalData.msg});
   }
 
   componentDidMount() {}
@@ -29,7 +31,6 @@ export default class Index extends Component {
   componentDidHide() {}
 
   handleTest(msg) {
-    console.log(this, msg);
     this.setState({ msg });
   }
 
@@ -49,3 +50,5 @@ export default class Index extends Component {
     );
   }
 }
+
+export default Index;

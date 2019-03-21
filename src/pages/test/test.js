@@ -1,22 +1,15 @@
-import "@tarojs/async-await";
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Navigator, Button } from "@tarojs/components";
 import events, { globalData } from "../../utils/events";
 
-export default class Test extends Component {
+class Test extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msg: globalData.msg
+      msg: ""
     };
     this.handleTest = this.handleTest.bind(this);
-  }
-  componentWillMount() {
     events.on("test", this.handleTest);
-  }
-
-  componentWillUnmount() {
-    events.off("test", this.handleTest);
   }
 
   handleTest(msg) {
@@ -26,6 +19,16 @@ export default class Test extends Component {
 
   onClick() {
     events.trigger("test", "this is a test!!!");
+  }
+
+  componentWillMount() {
+    this.setState({ msg: globalData.msg });
+  }
+
+  componentDidMount() {}
+
+  componentWillUnmount() {
+    events.off("test", this.handleTest);
   }
 
   render() {
@@ -41,3 +44,5 @@ export default class Test extends Component {
     );
   }
 }
+
+export default Test;
