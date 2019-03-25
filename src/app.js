@@ -13,25 +13,37 @@ class App extends Component {
   config = {
     pages: ["pages/index/index", "pages/my/my", "pages/test/test"],
     window: {
+      backgroundColor: "#f2f2f7",
       backgroundTextStyle: "light",
-      navigationBarBackgroundColor: "#fff",
-      navigationBarTitleText: "WeChat",
-      navigationBarTextStyle: "black"
+      navigationBarBackgroundColor: "#5352e4",
+      navigationBarTitleText: "共享账本",
+      navigationBarTextStyle: "white"
     },
     tabBar: {
-      color: "#000000",
-      selectedColor: "#000000",
+      color: "#888888",
+      selectedColor: "#5B78F9",
       borderStyle: "black",
+      backgroundColor: "#F6F6F6",
       list: [
         {
           pagePath: "pages/index/index",
-          text: "首页"
+          text: "首页",
+          iconPath: "./images/index.png",
+          selectedIconPath: "./images/indexSelected.png"
         },
         {
           pagePath: "pages/my/my",
-          text: "我的"
+          text: "我的",
+          iconPath: "./images/my.png",
+          selectedIconPath: "./images/mySelected.png"
         }
       ]
+    },
+    networkTimeout: {
+      request: 20000,
+      connectSocket: 20000,
+      uploadFile: 20000,
+      downloadFile: 20000
     }
   };
 

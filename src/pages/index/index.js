@@ -2,6 +2,8 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Navigator, Button } from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
+import UserBox from "../../Components/UserBox/UserBox";
+
 
 class Index extends Component {
   
@@ -46,6 +48,8 @@ class Index extends Component {
         <Text>{msg}</Text>
         <Button onClick={this.onClick}>广播</Button>
         <Navigator url='/pages/test/test'>test</Navigator>
+        <UserBox nickName='大熊猫' />
+        <UserBox nickName='stone-page' />
       </View>
     );
   }
