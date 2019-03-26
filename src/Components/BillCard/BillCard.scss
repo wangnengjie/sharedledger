@@ -1,0 +1,52 @@
+$lineHeight: 85px;
+$cardWidth: 690px;
+.BillCard {
+  margin: 50px 30px;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+
+  .BillCard-billDate {
+    width: 100%;
+    margin: 15px 0 10px 0;
+    height: 60px;
+    Text {
+      color: #888888;
+      font-size: 24px;
+      line-height: $lineHeight;
+      float: right;
+      margin-right: 60px;
+    }
+  }
+
+  .BillBox-infoBox{
+    min-height: $lineHeight;
+    display: flex;
+    margin: 5px 0;
+    .infoBox-label{
+      width: 24%;
+      Text{
+        margin-left: 60px;
+        color:#545454;
+        font-size: 24px;
+        height: $lineHeight;
+        line-height: $lineHeight;
+      }
+    }
+    .infoBox-info{
+      width: 76%;
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      flex-wrap: wrap;
+      > Text{
+        margin-left: 15px;
+      }
+      .infoText-money{
+        color:#5352E4;
+        font-size: 36px;
+      }
+    }
+  }
+}

@@ -1,12 +1,10 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Navigator, Button } from "@tarojs/components";
+import { View, Navigator, Button } from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
-import UserBox from "../../Components/UserBox/UserBox";
-
+import BillCard from "../../Components/BillCard/BillCard";
 
 class Index extends Component {
-  
   config = {
     navigationBarTitleText: "首页"
   };
@@ -14,14 +12,69 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msg: globalData.msg
+      uid: "member1",
+      condition: "",
+      ledgerName: "",
+      ledgerId: "",
+      members: [],
+      bill: []
     };
-    this.handleTest = this.handleTest.bind(this);
-    events.on("test", this.handleTest);
+    this.eventsGetLedger = this.eventsGetLedger.bind(this);
   }
 
   componentWillMount() {
-    // this.setState({msg:globalData.msg});
+    events.on("getLedger", this.eventsGetLedger);
+    let obj = {
+      condition: "run",
+      ledgerName: "test",
+      ledgerId: "aaaaaaaaaa",
+      createTime: new Date(),
+      members: [
+        {
+          uid: "member1",
+          nickName: "大熊猫",
+          avatarUrl: "nothing"
+        },
+        {
+          uid: "member2",
+          nickName: "stone-page",
+          avatarUrl: "nothing"
+        },
+        {
+          uid: "member3",
+          nickName: "测试号",
+          avatarUrl:"nothing"
+        },
+        {
+          uid: "member4",
+          nickName: "测试号2",
+          avatarUrl:"nothing"
+        }
+      ],
+      bill: [
+        {
+          billId: "bill1",
+          payer: "member1",
+          maker: "member1",
+          participant: ["member1", "member2","member3","member4"],
+          money: 11.3,
+          use: "",
+          comment: "test",
+          date: new Date().toUTCString()
+        },
+        {
+          billId: "bill2",
+          payer: "member2",
+          maker: "member1",
+          participant: ["member1", "member2"],
+          money: 12.3,
+          use: "恰饭",
+          comment: "",
+          date: new Date().toUTCString()
+        }
+      ]
+    };
+    events.trigger("getLedger", obj);
   }
 
   componentDidMount() {}
@@ -32,24 +85,22 @@ class Index extends Component {
 
   componentDidHide() {}
 
-  handleTest(msg) {
-    this.setState({ msg });
-  }
-
-  onClick() {
-    events.trigger("test", "haha");
+  eventsGetLedger(obj) {
+    this.setState({ ...obj });
   }
 
   render() {
-    const msg = this.state.msg;
-    console.log(this.state);
+    const { condition, ledgerName, ledgerId, members, bill, uid } = this.state;
+    let userIn = {};
+    members.forEach(e => {
+      userIn[e.uid] = e;
+    });
+    console.log(userIn);
     return (
-      <View className='index'>
-        <Text>{msg}</Text>
-        <Button onClick={this.onClick}>广播</Button>
-        <Navigator url='/pages/test/test'>test</Navigator>
-        <UserBox nickName='大熊猫' />
-        <UserBox nickName='stone-page' />
+      <View>
+        {bill.map(e => (
+          <BillCard cardInfo={e} members={userIn} key={e.billId} uid={uid} />
+        ))}
       </View>
     );
   }

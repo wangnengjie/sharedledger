@@ -1,4 +1,4 @@
-.UserBox {
+.UseBox {
   width: 134px;
   height: 52px;
   border-radius: 18px;
@@ -14,13 +14,13 @@
   }
 }
 
-.UserBox-selected {
-  border: 1px solid rgb(148, 157, 251);
-  color: #6079c1;
-  background-color: #ebeeff;
+.UseBox-selected {
+  border: 1px solid #FFB563;
+  color:#FFB563;
+  background-color:#FFFBEB;
 }
 
-.UserBox-unselected {
+.UseBox-unselected {
   border: 1px solid rgb(210, 210, 210);
   background: rgb(222, 222, 230);
   color: rgb(255, 255, 255);

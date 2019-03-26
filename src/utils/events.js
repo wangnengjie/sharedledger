@@ -5,8 +5,8 @@ const globalData = {
   
 };
 
-events.on("test", msg => {
-  globalData.msg = msg;
+events.on("getLedger", obj => {
+  Object.assign(globalData,obj);
 });
 
 export default events;
