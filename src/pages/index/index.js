@@ -25,8 +25,30 @@ class Index extends Component {
   componentWillMount() {
     events.on("getLedger", this.eventsGetLedger);
     let obj = {
+      auth: true,
+      uid: "member1",
+      run: [
+        {
+          ledgerId: "aaaaaaaaaa",
+          ledgerName: "test1"
+        },
+        {
+          ledgerId: "b",
+          ledgerName: "test2"
+        }
+      ],
+      done: [
+        {
+          ledgerId: "c",
+          ledgerName: "test3"
+        },
+        {
+          ledgerId: "d",
+          ledgerName: "test4"
+        }
+      ],
       condition: "run",
-      ledgerName: "test",
+      ledgerName: "test1",
       ledgerId: "aaaaaaaaaa",
       createTime: new Date(),
       members: [
@@ -43,12 +65,12 @@ class Index extends Component {
         {
           uid: "member3",
           nickName: "测试号",
-          avatarUrl:"nothing"
+          avatarUrl: "nothing"
         },
         {
           uid: "member4",
           nickName: "测试号2",
-          avatarUrl:"nothing"
+          avatarUrl: "nothing"
         }
       ],
       bill: [
@@ -56,7 +78,7 @@ class Index extends Component {
           billId: "bill1",
           payer: "member1",
           maker: "member1",
-          participant: ["member1", "member2","member3","member4"],
+          participant: ["member1", "member2", "member3", "member4"],
           money: 11.3,
           use: "",
           comment: "test",
@@ -90,7 +112,16 @@ class Index extends Component {
   }
 
   render() {
-    const { condition, ledgerName, ledgerId, members, bill, uid } = this.state;
+    const {
+      condition,
+      ledgerName,
+      ledgerId,
+      members,
+      bill,
+      uid,
+      run,
+      auth
+    } = this.state;
     let userIn = {};
     members.forEach(e => {
       userIn[e.uid] = e;
@@ -98,9 +129,24 @@ class Index extends Component {
     console.log(userIn);
     return (
       <View>
-        {bill.map(e => (
-          <BillCard cardInfo={e} members={userIn} key={e.billId} uid={uid} />
-        ))}
+        {!auth&&(<View></View>)}
+        
+        {}
+
+        {auth && run.length > 0 && (
+          <View>
+            {bill.map(e => (
+              <BillCard
+                cardInfo={e}
+                members={userIn}
+                key={e.billId}
+                uid={uid}
+              />
+            ))}
+          </View>
+        )}
+
+        
       </View>
     );
   }
