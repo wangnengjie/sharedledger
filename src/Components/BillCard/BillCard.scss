@@ -2,8 +2,9 @@ $lineHeight: 85px;
 $cardWidth: 690px;
 .BillCard {
   margin: 50px 30px;
+  padding-bottom: 30px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
 
@@ -20,33 +21,58 @@ $cardWidth: 690px;
     }
   }
 
-  .BillBox-infoBox{
+  .BillCard-infoBox {
     min-height: $lineHeight;
     display: flex;
     margin: 5px 0;
-    .infoBox-label{
+    .infoBox-label {
       width: 24%;
-      Text{
+      Text {
         margin-left: 60px;
-        color:#545454;
+        color: #545454;
         font-size: 24px;
         height: $lineHeight;
         line-height: $lineHeight;
       }
     }
-    .infoBox-info{
+    .infoBox-info {
       width: 76%;
       display: flex;
       justify-content: left;
       align-items: center;
       flex-wrap: wrap;
-      > Text{
+      > Text {
         margin-left: 15px;
       }
-      .infoText-money{
-        color:#5352E4;
+      .infoText-money {
+        color: #5352e4;
         font-size: 36px;
       }
+    }
+  }
+
+  .BillCard-fixLine {
+    height: $lineHeight;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    View {
+      width: 143px;
+      height: 56px;
+      border-radius: 28px;
+      text-align: center;
+      Text {
+        font-size: 30px;
+        color: white;
+      }
+    }
+    .fixLine-fix {
+      margin: 0 15px 0 300px;
+      background-color: #5b78f9;
+    }
+    .fixLine-delete {
+      margin: 0 15px;
+      background-color: #dcdce2;
     }
   }
 }

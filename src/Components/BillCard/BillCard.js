@@ -5,6 +5,22 @@ import UseBox from "../UseBox/UseBox";
 import "./BillCard.scss";
 
 class BillCard extends Component {
+  constructor(props){
+    super(props);
+    this.handleFix = this.handleFix.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleFix(){
+    const {billInfo,index} = this.props;
+    //跳转传参，JSON.Stringify(billInfo)，pagepath，index
+  }
+
+  handleDelete(){
+    const {billInfo,index} = this.props;
+    //跳转传参，JSON.Stringify(billInfo)，pagepath，index
+  }
+
   render() {
     const {
       date,
@@ -13,7 +29,7 @@ class BillCard extends Component {
       money,
       use,
       comment
-    } = this.props.cardInfo;
+    } = this.props.billInfo;
 
     const { members, done, uid } = this.props;
 
@@ -26,7 +42,7 @@ class BillCard extends Component {
           <Text>{time}</Text>
         </View>
 
-        <View className='BillBox-infoBox'>
+        <View className='BillCard-infoBox'>
           <View className='infoBox-label'>
             <Text>付款人</Text>
           </View>
@@ -35,7 +51,7 @@ class BillCard extends Component {
           </View>
         </View>
 
-        <View className='BillBox-infoBox'>
+        <View className='BillCard-infoBox'>
           <View className='infoBox-label'>
             <Text>参与人</Text>
           </View>
@@ -46,7 +62,7 @@ class BillCard extends Component {
           </View>
         </View>
 
-        <View className='BillBox-infoBox'>
+        <View className='BillCard-infoBox'>
           <View className='infoBox-label'>
             <Text>金额</Text>
           </View>
@@ -56,7 +72,7 @@ class BillCard extends Component {
         </View>
 
         {use !== "" && (
-          <View className='BillBox-infoBox'>
+          <View className='BillCard-infoBox'>
             <View className='infoBox-label'>
               <Text>用途</Text>
             </View>
@@ -67,7 +83,7 @@ class BillCard extends Component {
         )}
 
         {comment !== "" && (
-          <View className='BillBox-infoBox'>
+          <View className='BillCard-infoBox'>
             <View className='infoBox-label'>
               <Text>备注</Text>
             </View>
@@ -78,11 +94,11 @@ class BillCard extends Component {
         )}
 
         {!done && uid === payer && (
-          <View>
-            <View>
+          <View className='BillCard-fixLine'>
+            <View className='fixLine-fix' onClick={this.handleFix}>
               <Text>修改</Text>
             </View>
-            <View>
+            <View className='fixLine-delete' onClick={this.handleDelete}>
               <Text>删除</Text>
             </View>
           </View>
@@ -93,13 +109,14 @@ class BillCard extends Component {
 }
 
 BillCard.defaultProps = {
-  cardInfo: {
+  billInfo: {
     date: "",
     payer: "",
     participant: [],
     money: 0,
     use: "",
-    comment: ""
+    comment: "",
+    billId:""
   },
   members: {},
   done: false

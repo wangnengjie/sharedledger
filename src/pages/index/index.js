@@ -12,7 +12,6 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      uid: "member1",
       condition: "",
       ledgerName: "",
       ledgerId: "",
@@ -24,9 +23,9 @@ class Index extends Component {
 
   componentWillMount() {
     events.on("getLedger", this.eventsGetLedger);
+    Taro.setStorageSync("uid", "member1");
     let obj = {
       auth: true,
-      uid: "member1",
       run: [
         {
           ledgerId: "aaaaaaaaaa",
@@ -118,7 +117,6 @@ class Index extends Component {
       ledgerId,
       members,
       bill,
-      uid,
       run,
       auth
     } = this.state;
@@ -129,24 +127,23 @@ class Index extends Component {
     console.log(userIn);
     return (
       <View>
-        {!auth&&(<View></View>)}
-        
+        {!auth && <View />}
+
         {}
 
         {auth && run.length > 0 && (
           <View>
-            {bill.map(e => (
+            {bill.map((e,index) => (
               <BillCard
-                cardInfo={e}
+                billInfo={e}
                 members={userIn}
                 key={e.billId}
-                uid={uid}
+                uid={Taro.getStorageSync("uid")}
+                index={index}
               />
             ))}
           </View>
         )}
-
-        
       </View>
     );
   }
