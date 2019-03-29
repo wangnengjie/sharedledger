@@ -4,6 +4,10 @@ import "./index.scss";
 import events, { globalData } from "../../utils/events";
 import BillCard from "../../Components/BillCard/BillCard";
 
+const getAuth = async () => {
+  return await Taro.getSetting().then(res => res.authSetting["scope.userInfo"]);
+};
+
 class Index extends Component {
   config = {
     navigationBarTitleText: "首页"
@@ -21,11 +25,25 @@ class Index extends Component {
     this.eventsGetLedger = this.eventsGetLedger.bind(this);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    //事件挂载
     events.on("getLedger", this.eventsGetLedger);
+
+    //获取用户授权信息
+    //TODO:接口可用后记得改成false
+    const auth = await getAuth()||true;
+    console.log(auth)
+    await this.setState({auth});
+    console.log(auth);
+    //是否跳转授权页
+    if(auth){
+
+    }else{
+
+    }
+
     Taro.setStorageSync("uid", "member1");
     let obj = {
-      auth: true,
       run: [
         {
           ledgerId: "aaaaaaaaaa",
@@ -127,13 +145,11 @@ class Index extends Component {
     console.log(userIn);
     return (
       <View>
-        {!auth && <View />}
-
-        {}
+        {auth && run.length === 0 && <View />}
 
         {auth && run.length > 0 && (
           <View>
-            {bill.map((e,index) => (
+            {bill.map((e, index) => (
               <BillCard
                 billInfo={e}
                 members={userIn}
