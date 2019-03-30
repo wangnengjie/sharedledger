@@ -187,13 +187,16 @@ class Index extends Component {
                       <Text>{e.ledgerName}</Text>
                     </View>
                   ) : (
-                    <View
-                      key={e.ledgerId}
-                      className='account-line'
-                      onClick={this.handleSlide}
-                    >
-                      <Text>{e.ledgerName}</Text>
-                    </View>
+                    <>
+                      <View className='line' />
+                      <View
+                        key={e.ledgerId}
+                        className='account-line'
+                        onClick={this.handleSlide}
+                      >
+                        <Text>{e.ledgerName}</Text>
+                      </View>
+                    </>
                   )
                 )}
                 <View className='slide-button' onClick={this.handleSlide}>

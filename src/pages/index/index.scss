@@ -11,7 +11,7 @@ $account-line-height: 120px;
   }
 
   .view-slide {
-    max-height: 4 * $account-line-height !important;
+    max-height: 4 * $account-line-height+3px !important;
     overflow-y: scroll;
   }
 
@@ -24,6 +24,12 @@ $account-line-height: 120px;
     transition: all 0.2s;
     background-color: white;
     box-shadow: 0px 50px 100px 5px #eeeff4;
+    .line {
+      margin: auto;
+      width: 525rpx;
+      height: 2px;
+      background-color: #e7e7e7;
+    }
     .account-line {
       height: $account-line-height;
       Text {
@@ -70,6 +76,7 @@ $account-line-height: 120px;
   border-radius: 40px;
   background-color: #5b78f9;
   text-align: center;
+  box-shadow: 0px 50px 100px 5px #d6dbf7;
   Text {
     line-height: 84px;
     color: white;
