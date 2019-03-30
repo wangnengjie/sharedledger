@@ -1,8 +1,10 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Navigator, Button } from "@tarojs/components";
+import { View, Navigator, Button, Text, Image ,MovableArea ,MovableView } from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
 import BillCard from "../../Components/BillCard/BillCard";
+import arrow from "../../images/arrow.png";
+import addOneBall from "../../images/addOneBall.png";
 
 const getAuth = async () => {
   return await Taro.getSetting().then(res => res.authSetting["scope.userInfo"]);
@@ -16,6 +18,7 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      slide: false,
       condition: "",
       ledgerName: "",
       ledgerId: "",
@@ -23,6 +26,19 @@ class Index extends Component {
       bill: []
     };
     this.eventsGetLedger = this.eventsGetLedger.bind(this);
+    this.handleSlide = this.handleSlide.bind(this);
+  }
+
+  eventsGetLedger(obj) {
+    this.setState({ ...obj });
+  }
+
+  handleSlide() {
+    this.setState(prevState => ({slide:!prevState.slide}));
+  }
+
+  test() {
+    console.log("click!");
   }
 
   async componentWillMount() {
@@ -31,15 +47,13 @@ class Index extends Component {
 
     //获取用户授权信息
     //TODO:接口可用后记得改成false
-    const auth = await getAuth()||true;
-    console.log(auth)
-    await this.setState({auth});
+    const auth = (await getAuth()) || true;
+    console.log(auth);
+    await this.setState({ auth });
     console.log(auth);
     //是否跳转授权页
-    if(auth){
-
-    }else{
-
+    if (auth) {
+    } else {
     }
 
     Taro.setStorageSync("uid", "member1");
@@ -124,11 +138,8 @@ class Index extends Component {
 
   componentDidHide() {}
 
-  eventsGetLedger(obj) {
-    this.setState({ ...obj });
-  }
-
   render() {
+    //取参
     const {
       condition,
       ledgerName,
@@ -138,26 +149,75 @@ class Index extends Component {
       run,
       auth
     } = this.state;
+    //创建userInfo键值对
     let userIn = {};
     members.forEach(e => {
       userIn[e.uid] = e;
     });
-    console.log(userIn);
+
     return (
       <View>
         {auth && run.length === 0 && <View />}
 
         {auth && run.length > 0 && (
           <View>
-            {bill.map((e, index) => (
-              <BillCard
-                billInfo={e}
-                members={userIn}
-                key={e.billId}
-                uid={Taro.getStorageSync("uid")}
-                index={index}
-              />
-            ))}
+            {/* slideBar */}
+            <View className='head-bar'>
+              <View className='back-div' />
+              <View
+                className={`account-bar ${
+                  this.state.slide ? "view-slide" : ""
+                }`}
+              >
+                {run.map((e, index) =>
+                  index === 0 ? (
+                    <View
+                      key={e.ledgerId}
+                      className='account-line'
+                      onClick={this.handleSlide}
+                    >
+                      <Text>{e.ledgerName}</Text>
+                    </View>
+                  ) : (
+                    <View
+                      key={e.ledgerId}
+                      className='account-line'
+                      onClick={this.handleSlide}
+                    >
+                      <Text>{e.ledgerName}</Text>
+                    </View>
+                  )
+                )}
+                <View className='slide-button' onClick={this.handleSlide}>
+                  <Image
+                    src={arrow}
+                    className={this.state.slide ? "img-slide" : ""}
+                  />
+                </View>
+              </View>
+            </View>
+            {/* BillCard */}
+            <View className='billCard-bar'>
+              {bill.map((e, index) => (
+                <BillCard
+                  billInfo={e}
+                  members={userIn}
+                  key={e.billId}
+                  uid={Taro.getStorageSync("uid")}
+                  index={index}
+                />
+              ))}
+            </View>
+            {/*结算按钮*/}
+            <View className='check-out'>
+              <Text>结账</Text>
+            </View>
+            {/* 全局拖动球 */}
+            <MovableArea>
+              <MovableView x='690px' y='66666px' inertia='true' direction='all' out-of-bounds='true'>
+                <Image src={addOneBall}></Image>
+              </MovableView>
+            </MovableArea>
           </View>
         )}
       </View>

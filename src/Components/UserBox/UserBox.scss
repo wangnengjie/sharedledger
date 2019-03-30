@@ -6,11 +6,13 @@
   justify-content: center;
   margin: 10px 15px;
   Text {
+    width: 124px;
     line-height: 52px;
     text-align: center;
     white-space: nowrap;
     text-overflow:ellipsis;
-    font-size: 24px;
+    overflow: hidden;
+    font-size: 24px; 
   }
 }
 

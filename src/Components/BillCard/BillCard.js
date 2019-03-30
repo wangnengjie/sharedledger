@@ -67,7 +67,7 @@ class BillCard extends Component {
             <Text>金额</Text>
           </View>
           <View className='infoBox-info'>
-            <Text className='infoText-money'>{money}</Text>
+            <Text className='infoText-money'>{money}元</Text>
           </View>
         </View>
 
@@ -88,7 +88,7 @@ class BillCard extends Component {
               <Text>备注</Text>
             </View>
             <View className='infoBox-info'>
-              <Text>{comment}</Text>
+              <Text className='infoText-comment'>{comment}</Text>
             </View>
           </View>
         )}
