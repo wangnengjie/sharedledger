@@ -47,7 +47,7 @@ class BillCard extends Component {
             <Text>付款人</Text>
           </View>
           <View className='infoBox-info'>
-            <UserBox nickName={members[payer].nickName} />
+            <UserBox nickName={members[payer].nickName} isPay />
           </View>
         </View>
 
@@ -116,7 +116,8 @@ BillCard.defaultProps = {
     money: 0,
     use: "",
     comment: "",
-    billId:""
+    billId:"",
+    opacity:1
   },
   members: {},
   done: false

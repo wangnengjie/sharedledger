@@ -1,5 +1,13 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Navigator, Button, Text, Image ,MovableArea ,MovableView } from "@tarojs/components";
+import {
+  View,
+  Navigator,
+  Button,
+  Text,
+  Image,
+  MovableArea,
+  MovableView
+} from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
 import BillCard from "../../Components/BillCard/BillCard";
@@ -34,7 +42,7 @@ class Index extends Component {
   }
 
   handleSlide() {
-    this.setState(prevState => ({slide:!prevState.slide}));
+    this.setState(prevState => ({ slide: !prevState.slide }));
   }
 
   test() {
@@ -214,8 +222,14 @@ class Index extends Component {
             </View>
             {/* 全局拖动球 */}
             <MovableArea>
-              <MovableView x='690px' y='66666px' inertia='true' direction='all' out-of-bounds='true'>
-                <Image src={addOneBall}></Image>
+              <MovableView
+                x='690px'
+                y='66666px'
+                inertia='true'
+                direction='all'
+                out-of-bounds='true'
+              >
+                <Image src={addOneBall} />
               </MovableView>
             </MovableArea>
           </View>
