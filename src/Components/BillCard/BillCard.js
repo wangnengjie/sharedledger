@@ -47,7 +47,7 @@ class BillCard extends Component {
             <Text>付款人</Text>
           </View>
           <View className='infoBox-info'>
-            <UserBox nickName={members[payer].nickName} isPay />
+            <UserBox nickName={members[payer].nickName} isPayer />
           </View>
         </View>
 
@@ -57,7 +57,7 @@ class BillCard extends Component {
           </View>
           <View className='infoBox-info'>
             {participant.map(p => (
-              <UserBox key={p} nickName={members[p].nickName} />
+              <UserBox key={p} nickName={members[p].nickName} selected />
             ))}
           </View>
         </View>

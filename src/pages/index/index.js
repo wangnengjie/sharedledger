@@ -2,7 +2,6 @@ import Taro, { Component } from "@tarojs/taro";
 import {
   View,
   Navigator,
-  Button,
   Text,
   Image,
   MovableArea,
@@ -90,6 +89,7 @@ class Index extends Component {
       ledgerName: "test1",
       ledgerId: "aaaaaaaaaa",
       createTime: new Date(),
+      use:["恰饭","测试","长度测试"],
       members: [
         {
           uid: "member1",
@@ -187,7 +187,7 @@ class Index extends Component {
                       <Text>{e.ledgerName}</Text>
                     </View>
                   ) : (
-                    <>
+                    <fragment>
                       <View className='line' />
                       <View
                         key={e.ledgerId}
@@ -196,7 +196,7 @@ class Index extends Component {
                       >
                         <Text>{e.ledgerName}</Text>
                       </View>
-                    </>
+                    </fragment>
                   )
                 )}
                 <View className='slide-button' onClick={this.handleSlide}>
@@ -232,7 +232,9 @@ class Index extends Component {
                 direction='all'
                 out-of-bounds='true'
               >
-                <Image src={addOneBall} />
+                <Navigator url={`/pages/bill/bill?type=add&page=index&ledgerId=${ledgerId}`} openType='navigate' hover-class='none'>
+                  <Image src={addOneBall} />
+                </Navigator>
               </MovableView>
             </MovableArea>
           </View>

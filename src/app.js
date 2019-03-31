@@ -11,7 +11,7 @@ import "./app.scss";
 
 class App extends Component {
   config = {
-    pages: ["pages/index/index", "pages/my/my", "pages/test/test"],
+    pages: ["pages/index/index", "pages/my/my", "pages/bill/bill", "pages/test/test"],
     window: {
       backgroundColor: "#f2f2f7",
       backgroundTextStyle: "light",
