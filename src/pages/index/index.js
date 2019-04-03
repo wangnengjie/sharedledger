@@ -11,7 +11,6 @@ import "./index.scss";
 import events, { globalData } from "../../utils/events";
 import BillCard from "../../Components/BillCard/BillCard";
 import arrow from "../../images/arrow.png";
-import addOneBall from "../../images/addOneBall.png";
 
 const getAuth = async () => {
   return await Taro.getSetting().then(res => res.authSetting["scope.userInfo"]);
@@ -19,7 +18,8 @@ const getAuth = async () => {
 
 class Index extends Component {
   config = {
-    navigationBarTitleText: "首页"
+    navigationBarTitleText: "首页",
+    usingComponents: {}
   };
 
   constructor(props) {
@@ -89,7 +89,7 @@ class Index extends Component {
       ledgerName: "test1",
       ledgerId: "aaaaaaaaaa",
       createTime: new Date(),
-      use:["恰饭","测试","长度测试"],
+      use: ["恰饭", "测试", "长度测试"],
       members: [
         {
           uid: "member1",
@@ -142,7 +142,11 @@ class Index extends Component {
 
   componentWillUnmount() {}
 
-  componentDidShow() {}
+  componentDidShow() {
+    this.$scope.getTabBar().setData({
+      selected: 0 // 当前页面对应的 index
+    });
+  }
 
   componentDidHide() {}
 
@@ -223,20 +227,6 @@ class Index extends Component {
             <View className='check-out'>
               <Text>结账</Text>
             </View>
-            {/* 全局拖动球 */}
-            <MovableArea>
-              <MovableView
-                x='690px'
-                y='66666px'
-                inertia='true'
-                direction='all'
-                out-of-bounds='true'
-              >
-                <Navigator url={`/pages/bill/bill?type=add&page=index&ledgerId=${ledgerId}`} openType='navigate' hover-class='none'>
-                  <Image src={addOneBall} />
-                </Navigator>
-              </MovableView>
-            </MovableArea>
           </View>
         )}
       </View>

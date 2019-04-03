@@ -28,6 +28,7 @@ const config = {
   },
   copy: {
     patterns: [
+      { from: "src/custom-tab-bar/", to: "dist/custom-tab-bar/" }
     ],
     options: {
     }

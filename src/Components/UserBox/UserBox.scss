@@ -1,18 +1,19 @@
 .UserBox {
-  width: 134px;
+  min-width: 134px;
+  max-width: 268px;
   height: 52px;
   border-radius: 18px;
   display: flex;
   justify-content: center;
   margin: 10px 15px;
   Text {
-    width: 124px;
     line-height: 52px;
     text-align: center;
     white-space: nowrap;
     text-overflow:ellipsis;
     overflow: hidden;
     font-size: 24px; 
+    margin: auto 10px;
   }
 }
 
