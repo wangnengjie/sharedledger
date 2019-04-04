@@ -1,24 +1,14 @@
 import Taro, { Component } from "@tarojs/taro";
-import {
-  View,
-  Navigator,
-  Text,
-  Image,
-  MovableArea,
-  MovableView
-} from "@tarojs/components";
+import { View, Navigator, Text, Image } from "@tarojs/components";
 import "./index.scss";
 import events, { globalData } from "../../utils/events";
 import BillCard from "../../Components/BillCard/BillCard";
 import arrow from "../../images/arrow.png";
-
-const getAuth = async () => {
-  return await Taro.getSetting().then(res => res.authSetting["scope.userInfo"]);
-};
+import getAuth from "../../utils/getAuth";
 
 class Index extends Component {
   config = {
-    navigationBarTitleText: "首页",
+    navigationBarTitleText: "共享账本",
     usingComponents: {}
   };
 
@@ -26,6 +16,8 @@ class Index extends Component {
     super(props);
     this.state = {
       slide: false,
+      run: [],
+      done: [],
       condition: "",
       ledgerName: "",
       ledgerId: "",
@@ -65,6 +57,7 @@ class Index extends Component {
 
     Taro.setStorageSync("uid", "member1");
     let obj = {
+      auth: auth,
       run: [
         {
           ledgerId: "aaaaaaaaaa",
@@ -169,9 +162,9 @@ class Index extends Component {
 
     return (
       <View>
-        {auth && run.length === 0 && <View />}
+        {run.length === 0 && <View />}
 
-        {auth && run.length > 0 && (
+        {run.length > 0 && (
           <View>
             {/* slideBar */}
             <View className='head-bar'>

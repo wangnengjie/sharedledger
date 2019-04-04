@@ -1,8 +1,9 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Image, Text, Navigator } from "@tarojs/components";
+import { View, Image, Text, Button } from "@tarojs/components";
 import { globalData } from "../utils/events";
 import "./index.scss";
-import addOneBall from './addOneBall.png';
+import addOneBall from "./addOneBall.png";
+import getAuth from "../utils/getAuth";
 
 class TabBar extends Component {
   constructor(props) {
@@ -26,8 +27,17 @@ class TabBar extends Component {
     };
   }
 
-  switchTab(url) {
-    Taro.switchTab({ url });
+  async switchTab(url) {
+    globalData.auth && Taro.switchTab({ url });
+  }
+
+  async navigateToBillPage() {
+    globalData.auth &&
+      Taro.navigateTo({
+        url: `/pages/bill/bill?type=add&page=index&ledgerId=${
+          globalData.ledgerId
+        }`
+      });
   }
 
   render() {
@@ -36,9 +46,12 @@ class TabBar extends Component {
       <View className='tabbar'>
         {list.map((tab, index) => {
           return (
-            <View
+            <Button
               className='tab'
               key={index}
+              openType='getUserInfo'
+              plain
+              hoverClass='none'
               onClick={e => {
                 this.switchTab(tab.pagePath, e);
               }}
@@ -49,20 +62,18 @@ class TabBar extends Component {
               <Text className={selected === index ? "text-selected" : ""}>
                 {tab.text}
               </Text>
-            </View>
+            </Button>
           );
         })}
-        <View className='addOneBall'>
-          <Navigator
-            url={`/pages/bill/bill?type=add&page=index&ledgerId=${
-              globalData.ledgerId
-            }`}
-            openType='navigate'
-            hover-class='none'
-          >
-            <Image src={addOneBall} />
-          </Navigator>
-        </View>
+        <Button
+          openType='getUserInfo'
+          plain
+          hoverClass='none'
+          className='addOneBall'
+          onClick={this.navigateToBillPage}
+        >
+          <Image src={addOneBall} />
+        </Button>
       </View>
     );
   }
