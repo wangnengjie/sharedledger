@@ -28,10 +28,10 @@ class TabBar extends Component {
   }
 
   async switchTab(url) {
-    globalData.auth && Taro.switchTab({ url });
+    Taro.switchTab({ url });
   }
 
-  async navigateToBillPage() {
+  navigateToBillPage() {
     globalData.auth &&
       Taro.navigateTo({
         url: `/pages/bill/bill?type=add&page=index&ledgerId=${
@@ -46,12 +46,9 @@ class TabBar extends Component {
       <View className='tabbar'>
         {list.map((tab, index) => {
           return (
-            <Button
+            <View
               className='tab'
               key={index}
-              openType='getUserInfo'
-              plain
-              hoverClass='none'
               onClick={e => {
                 this.switchTab(tab.pagePath, e);
               }}
@@ -62,7 +59,7 @@ class TabBar extends Component {
               <Text className={selected === index ? "text-selected" : ""}>
                 {tab.text}
               </Text>
-            </Button>
+            </View>
           );
         })}
         <Button
@@ -71,6 +68,7 @@ class TabBar extends Component {
           hoverClass='none'
           className='addOneBall'
           onClick={this.navigateToBillPage}
+          bindgetuserinfo
         >
           <Image src={addOneBall} />
         </Button>
