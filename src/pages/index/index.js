@@ -1,10 +1,12 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Navigator, Text, Image } from "@tarojs/components";
+import { View, Text, Image, Button } from "@tarojs/components";
+import { AtCurtain } from "taro-ui";
 import "./index.scss";
-import events, { globalData } from "../../utils/events";
+import events from "../../utils/events";
+import { myLogin, myRequest } from "../../utils/myRequest";
+import getAuth from "../../utils/getAuth";
 import BillCard from "../../Components/BillCard/BillCard";
 import arrow from "../../images/arrow.png";
-import getAuth from "../../utils/getAuth";
 
 class Index extends Component {
   config = {
@@ -16,124 +18,186 @@ class Index extends Component {
     super(props);
     this.state = {
       slide: false,
+      curtain: {
+        isOpened: false,
+        msg: "",
+        onClose: null,
+        onSure: null
+      },
       run: [],
-      done: [],
-      condition: "",
-      ledgerName: "",
       ledgerId: "",
-      members: [],
-      bill: []
+      users: [],
+      bills: []
     };
-    this.eventsGetLedger = this.eventsGetLedger.bind(this);
+    this.eventsGetIndex = this.eventsGetIndex.bind(this);
+    this.eventsSuccessInvite = this.eventsSuccessInvite.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
+    this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
+    this.handleInvite = this.handleInvite.bind(this);
   }
 
-  eventsGetLedger(obj) {
-    this.setState({ ...obj });
+  eventsGetIndex(obj) {
+    let { run, ledger } = obj;
+    this.setState(
+      {
+        run,
+        ...ledger
+      },
+      () => {
+        Taro.hideLoading();
+      }
+    );
+  }
+
+  eventsSuccessInvite(ledger) {
+    const run = this.state.run;
+    const { ledgerName, ledgerId, done } = ledger;
+    this.setState({
+      run: run.slice().unshift(ledgerId,ledgerName,done),
+      ...ledger
+    });
   }
 
   handleSlide() {
     this.setState(prevState => ({ slide: !prevState.slide }));
   }
 
-  test() {
-    console.log("click!");
+  handleCloseCurtain() {
+    this.setState({
+      curtain: {
+        isOpened: false,
+        msg: "",
+        onClose: null,
+        onSure: null
+      }
+    });
+  }
+
+  async handleInvite(invitationKey) {
+    const data = await myRequest("/participation", "POST", { invitationKey });
+    if (data) {
+      const ledger = await myRequest("/ledger", "GET", {
+        ledgerId: data.ledgerId
+      });
+      if (ledger) {
+        events.trigger("successInvite", ledger.ledger);
+        Taro.showToast({ title: "成功加入账本", icon: "none" });
+        this.handleCloseCurtain();
+      }
+    }
   }
 
   async componentWillMount() {
+    const that = this;
+    const { invitationKey, ledgerName } = this.$router.params;
+    //显示加载中
+    Taro.showLoading({ title: "程序初始化中", mask: true });
     //事件挂载
-    events.on("getLedger", this.eventsGetLedger);
-
+    events.on("getIndex", this.eventsGetIndex);
+    events.on("successInvite", this.eventsSuccessInvite);
     //获取用户授权信息
-    //TODO:接口可用后记得改成false
-    const auth = (await getAuth()) || true;
-    console.log(auth);
-    await this.setState({ auth });
-    console.log(auth);
-    //是否跳转授权页
-    if (auth) {
-    } else {
+    const auth = (await getAuth()) || false;
+    this.setState({ auth });
+    //用户登录
+    Taro.getStorageSync("uid") !== "" &&
+      Taro.getStorageSync("sessionId") !== "" &&
+      (await myLogin());
+    //获取首页信息,事件中会关闭加载中图标
+    const data = await myRequest("/index", "GET");
+    events.trigger("getIndex", data);
+    //处理邀请逻辑
+    if (invitationKey) {
+      this.setState({
+        curtain: {
+          isOpened: true,
+          msg: `确认加入账本 ${ledgerName} 吗`,
+          onClose: that.handleCloseCurtain,
+          onSure: () => {
+            that.handleInvite(invitationKey);
+          }
+        }
+      });
     }
 
-    Taro.setStorageSync("uid", "member1");
-    let obj = {
-      auth: auth,
-      run: [
-        {
-          ledgerId: "aaaaaaaaaa",
-          ledgerName: "test1"
-        },
-        {
-          ledgerId: "b",
-          ledgerName: "test2"
-        }
-      ],
-      done: [
-        {
-          ledgerId: "c",
-          ledgerName: "test3"
-        },
-        {
-          ledgerId: "d",
-          ledgerName: "test4"
-        }
-      ],
-      condition: "run",
-      ledgerName: "test1",
-      ledgerId: "aaaaaaaaaa",
-      createTime: new Date(),
-      use: ["恰饭", "测试", "长度测试"],
-      members: [
-        {
-          uid: "member1",
-          nickName: "大熊猫",
-          avatarUrl: "nothing"
-        },
-        {
-          uid: "member2",
-          nickName: "stone-page",
-          avatarUrl: "nothing"
-        },
-        {
-          uid: "member3",
-          nickName: "测试号",
-          avatarUrl: "nothing"
-        },
-        {
-          uid: "member4",
-          nickName: "测试号2",
-          avatarUrl: "nothing"
-        }
-      ],
-      bill: [
-        {
-          billId: "bill1",
-          payer: "member1",
-          maker: "member1",
-          participant: ["member1", "member2", "member3", "member4"],
-          money: 11.3,
-          use: "",
-          comment: "test",
-          date: new Date().toUTCString()
-        },
-        {
-          billId: "bill2",
-          payer: "member2",
-          maker: "member1",
-          participant: ["member1", "member2"],
-          money: 12.3,
-          use: "恰饭",
-          comment: "",
-          date: new Date().toUTCString()
-        }
-      ]
-    };
-    events.trigger("getLedger", obj);
+    // let obj = {
+    //   auth: auth,
+    //   run: [
+    //     {
+    //       ledgerId: "aaaaaaaaaa",
+    //       ledgerName: "test1"
+    //     },
+    //     {
+    //       ledgerId: "b",
+    //       ledgerName: "test2"
+    //     }
+    //   ],
+    //   done: [
+    //     {
+    //       ledgerId: "c",
+    //       ledgerName: "test3"
+    //     },
+    //     {
+    //       ledgerId: "d",
+    //       ledgerName: "test4"
+    //     }
+    //   ],
+    //   ledgerName: "test1",
+    //   ledgerId: "aaaaaaaaaa",
+    //   createTime: new Date(),
+    //   use: ["恰饭", "测试", "长度测试"],
+    //   members: [
+    //     {
+    //       uid: "member1",
+    //       nickName: "大熊猫",
+    //       avatarUrl: "nothing"
+    //     },
+    //     {
+    //       uid: "member2",
+    //       nickName: "stone-page",
+    //       avatarUrl: "nothing"
+    //     },
+    //     {
+    //       uid: "member3",
+    //       nickName: "测试号",
+    //       avatarUrl: "nothing"
+    //     },
+    //     {
+    //       uid: "member4",
+    //       nickName: "测试号2",
+    //       avatarUrl: "nothing"
+    //     }
+    //   ],
+    //   bill: [
+    //     {
+    //       billId: "bill1",
+    //       payer: "member1",
+    //       maker: "member1",
+    //       participant: ["member1", "member2", "member3", "member4"],
+    //       money: 11.3,
+    //       use: "",
+    //       comment: "test",
+    //       date: new Date().toUTCString()
+    //     },
+    //     {
+    //       billId: "bill2",
+    //       payer: "member2",
+    //       maker: "member1",
+    //       participant: ["member1", "member2"],
+    //       money: 12.3,
+    //       use: "恰饭",
+    //       comment: "",
+    //       date: new Date().toUTCString()
+    //     }
+    //   ]
+    // };
   }
 
   componentDidMount() {}
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    events.off("getIndex", this.eventsGetIndex);
+    events.off("successInvite", this.eventsSuccessInvite);
+  }
 
   componentDidShow() {
     this.$scope.getTabBar().setData({
@@ -145,23 +209,31 @@ class Index extends Component {
 
   render() {
     //取参
-    const {
-      condition,
-      ledgerName,
-      ledgerId,
-      members,
-      bill,
-      run,
-      auth
-    } = this.state;
+    const { ledgerId, users, bills, run, curtain } = this.state;
     //创建userInfo键值对
     let userIn = {};
-    members.forEach(e => {
+    users.forEach(e => {
       userIn[e.uid] = e;
     });
-
+    //处理账本
+    const _run = run.slice();
+    let i=_run.findIndex(e => e.ledgerId === ledgerId);
+    _run.unshift(_run[i]);
+    _run.splice(i + 1, 1);
     return (
       <View>
+        {/* 幕帘 */}
+        <AtCurtain
+          isOpened={curtain.isOpened}
+          onClose={curtain.onClose}
+        >
+          <View>
+            
+            <Button onClick={curtain.onClose}>取消</Button>
+            <Button onClick={curtain.onSure}>确定</Button>
+          </View>
+        </AtCurtain>
+
         {run.length === 0 && <View />}
 
         {run.length > 0 && (
@@ -174,7 +246,7 @@ class Index extends Component {
                   this.state.slide ? "view-slide" : ""
                 }`}
               >
-                {run.map((e, index) =>
+                {_run.map((e, index) =>
                   index === 0 ? (
                     <View
                       key={e.ledgerId}
@@ -206,7 +278,7 @@ class Index extends Component {
             </View>
             {/* BillCard */}
             <View className='billCard-bar'>
-              {bill.map((e, index) => (
+              {bills.map((e, index) => (
                 <BillCard
                   billInfo={e}
                   members={userIn}
