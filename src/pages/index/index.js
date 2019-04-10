@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Image, Button } from "@tarojs/components";
+import { View, Text, Image, Button, Navigator } from "@tarojs/components";
 import { AtCurtain } from "taro-ui";
 import "./index.scss";
 import events from "../../utils/events";
@@ -7,6 +7,7 @@ import { myLogin, myRequest } from "../../utils/myRequest";
 import getAuth from "../../utils/getAuth";
 import BillCard from "../../Components/BillCard/BillCard";
 import arrow from "../../images/arrow.png";
+import welcome from "../../images/welcome.png";
 
 class Index extends Component {
   config = {
@@ -21,8 +22,8 @@ class Index extends Component {
       curtain: {
         isOpened: false,
         msg: "",
-        onClose: null,
-        onSure: null
+        onClose() {},
+        onSure() {}
       },
       run: [],
       ledgerId: "",
@@ -34,6 +35,7 @@ class Index extends Component {
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
+    this.onGetUserInfo = this.onGetUserInfo.bind(this);
   }
 
   eventsGetIndex(obj) {
@@ -53,7 +55,7 @@ class Index extends Component {
     const run = this.state.run;
     const { ledgerName, ledgerId, done } = ledger;
     this.setState({
-      run: run.slice().unshift(ledgerId,ledgerName,done),
+      run: run.slice().unshift(ledgerId, ledgerName, done),
       ...ledger
     });
   }
@@ -67,8 +69,8 @@ class Index extends Component {
       curtain: {
         isOpened: false,
         msg: "",
-        onClose: null,
-        onSure: null
+        onClose() {},
+        onSure() {}
       }
     });
   }
@@ -87,6 +89,22 @@ class Index extends Component {
     }
   }
 
+  onGetUserInfo(e) {
+    const userInfo = e.detail.userInfo;
+    if (!this.state.auth && userInfo) {
+      events.trigger("setUserInfo", userInfo);
+      this.setState(prevState => ({
+        auth: !prevState.auth,
+        userInfo
+      }));
+      myRequest("/user", "PUT", {
+        uid: Taro.getStorageSync("uid"),
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName
+      });
+    }
+  }
+
   async componentWillMount() {
     const that = this;
     const { invitationKey, ledgerName } = this.$router.params;
@@ -95,13 +113,27 @@ class Index extends Component {
     //事件挂载
     events.on("getIndex", this.eventsGetIndex);
     events.on("successInvite", this.eventsSuccessInvite);
-    //获取用户授权信息
-    const auth = (await getAuth()) || false;
-    this.setState({ auth });
     //用户登录
     Taro.getStorageSync("uid") !== "" &&
       Taro.getStorageSync("sessionId") !== "" &&
       (await myLogin());
+    //获取用户授权信息
+    const auth = (await getAuth()) || false;
+    this.setState({ auth });
+    events.trigger("setAuth", auth);
+    if (auth) {
+      //这一步放异步
+      Taro.getUserInfo().then(res => {
+        const userInfo = res.userInfo;
+        that.setState({ userInfo });
+        events.trigger("setUserInfo", userInfo);
+        myRequest("/user", "PUT", {
+          uid: Taro.getStorageSync("uid"),
+          nickName: userInfo.nickName,
+          avatarUrl: userInfo.avatarUrl
+        });
+      });
+    }
     //获取首页信息,事件中会关闭加载中图标
     const data = await myRequest("/index", "GET");
     events.trigger("getIndex", data);
@@ -217,24 +249,36 @@ class Index extends Component {
     });
     //处理账本
     const _run = run.slice();
-    let i=_run.findIndex(e => e.ledgerId === ledgerId);
+    let i = _run.findIndex(e => e.ledgerId === ledgerId);
     _run.unshift(_run[i]);
     _run.splice(i + 1, 1);
+
     return (
       <View>
         {/* 幕帘 */}
-        <AtCurtain
-          isOpened={curtain.isOpened}
-          onClose={curtain.onClose}
-        >
+        <AtCurtain isOpened={curtain.isOpened}>
           <View>
-            
+            <Text>{curtain.msg}</Text>
+          </View>
+          <View>
             <Button onClick={curtain.onClose}>取消</Button>
-            <Button onClick={curtain.onSure}>确定</Button>
+            <Button
+              onClick={curtain.onSure}
+              openType='getUserInfo'
+              bindgetuserinfo={this.onGetUserInfo}
+            >
+              确定
+            </Button>
           </View>
         </AtCurtain>
 
-        {run.length === 0 && <View />}
+        {run.length === 0 && (<View>
+          <View>
+            <Image src={welcome} />
+            <Text>还没有账本，快去创建你的账本吧！</Text>
+            <Navigator openType='navigate' url='pages/createLedger/createLedger'><Text>创建账本</Text></Navigator>
+          </View>
+        </View>)}
 
         {run.length > 0 && (
           <View>
