@@ -18,5 +18,9 @@ events.on("setUserInfo", userInfo => {
   Object.assign(globalData, userInfo);
 })
 
+// events.on("addOne", this.handleAddOne);
+
+// events.on("fix", this.handleFix);
+
 export default events;
 export { globalData, tempBillData, tempLedgerData };

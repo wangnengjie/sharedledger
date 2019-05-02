@@ -1,29 +1,39 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Button } from "@tarojs/components";
-import { AtCurtain } from "taro-ui";
 
 class Curtain extends Component {
   render() {
-    const { isOpened, msg, onClose, onSure } = this.props.Curtain;
+    const { msg, onClose, onSure } = this.props.curtain;
+    console.log(this.props.curtain);
+    const onGetUserInfo = this.props.onGetUserInfo;
     return (
-      <AtCurtain isOpened={isOpened}>
+      <View>
         <View>
           <Text>{msg}</Text>
         </View>
         <View>
-          <Button onClick={onClose}>取消</Button>
-          <Button onClick={onSure}>确定</Button>
+          <Button onClick={onClose} hover-class='none'>取消</Button>
+          <Button
+            onClick={onSure}
+            hover-class='none'
+            openType='getUserInfo'
+            bindgetuserinfo={onGetUserInfo}
+          >
+            确定
+          </Button>
         </View>
-      </AtCurtain>
+      </View>
     );
   }
 }
 
 Curtain.defaultProps = {
-  isOpened: false,
-  msg: "",
-  onClose() {},
-  onSure() {}
+  curtain: {
+    msg: "",
+    onClose() {},
+    onSure() {}
+  },
+  onGetUserInfo() {}
 };
 
 export default Curtain;

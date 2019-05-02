@@ -1,4 +1,3 @@
-
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
 import events, {
@@ -11,8 +10,66 @@ class Bill extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.initialize = this.initialize.bind(this);
     this.handleAddOne = this.handleAddOne.bind(this);
     this.handleFix = this.handleFix.bind(this);
+  }
+
+  initialize(type, page, ledgerId) {
+    const uid = Taro.getStorageSync("uid");
+    if (type === "add") {   //加一笔
+      events.on("addOne", this.handleAddOne);
+      // 从主页进来加一笔
+      if (page === "index") {
+        console.log(globalData);
+        var { members, ledgerName, use } = globalData;
+      } else {
+      // 从账单详情页进来加一笔
+        var { members, ledgerName, use } = tempLedgerData;
+      }
+
+      members = JSON.parse(JSON.stringify(members));
+      console.log(members);
+      for (let i = 0; i < members.length; i++) {
+        members[i].selected = true;
+      }
+
+      //默认记账人为付款人
+      for (let i = 0; i < members.length; i++) {
+        if (members[i].uid === uid) {
+          let user = members.splice(i, 1);
+          members.unshift(user[0]);
+          break;
+        }
+      }
+      // 初始化数据
+      this.setState({
+        type,
+        page,
+        ledgerId,
+        ledgerName,
+        use,
+        members
+      });
+    } else if (type === "fix") {
+      if (page === "index") {
+        // 主页修改明细
+        this.setState({
+          ...tempBillData,
+          ledgerUse: globalData.use,
+          type,
+          page
+        });
+      } else {
+        // 详情页修改明细
+        this.setState({
+          ...tempBillData,
+          ledgerUse: tempLedgerData.use,
+          type,
+          page
+        });
+      }
+    }
   }
 
   handleAddOne() {}
@@ -21,65 +78,11 @@ class Bill extends Component {
 
   componentWillMount() {
     const { type, page, ledgerId } = this.$router.params;
-    initialize.call(this, type, page, ledgerId);
+    this.initialize(type, page, ledgerId);
   }
-
-  componentDidMount() {}
-
-  componentWillUnmount() {}
 
   render() {
     return <View />;
-  }
-}
-
-function initialize(type, page, ledgerId) {
-  const uid = Taro.getStorageSync("uid");
-  if (type === "add") {
-    events.on("addOne", this.handleAddOne);
-
-    if (page === "index") {
-      console.log(globalData);
-      var { members, ledgerName, use } = globalData;
-    } else {
-      var { members, ledgerName, use } = tempLedgerData;
-    }
-
-    members = JSON.parse(JSON.stringify(members));
-    console.log(members);
-    for (let i = 0; i < members.length; i++) {
-      members[i].selected = true;
-    }
-
-    //默认记账人为付款人
-    for (let i = 0; i < members.length; i++) {
-      if (members[i].uid === uid) {
-        let user = members.splice(i, 1);
-        members.unshift(user[0]);
-        break;
-      }
-    }
-
-    this.setState({
-      type,
-      page,
-      ledgerId,
-      ledgerName,
-      use,
-      members
-    });
-  } else if (type === "fix") {
-    events.on("fix", this.handleFix);
-    if (page === "index") {
-      this.setState({ ...tempBillData, ledgerUse: globalData.use, type, page });
-    } else {
-      this.setState({
-        ...tempBillData,
-        ledgerUse: tempLedgerData.use,
-        type,
-        page
-      });
-    }
   }
 }
 

@@ -4,12 +4,15 @@ const route = "https://www.westice.top/weapp";
 
 const myLogin = async () => {
   const code = await Taro.login().then(res => res.code);
-  const { errcode, errMsg, sessionId, userId } = await Taro.request({
+  const { errcode, errMsg, sessionId, uid } = await Taro.request({
     method: "GET",
     url: route + "/session",
     data: { code }
-  }).then(res => res.data);
-  
+  }).then(res => {
+    console.log(res.data);
+    return res.data;
+  });
+
   if (errcode !== 0) {
     Taro.showToast({
       title: errMsg,
@@ -18,10 +21,8 @@ const myLogin = async () => {
     return;
   }
 
-  await Promise.all([
-    Taro.setStorage("userId", userId),
-    Taro.setStorage("sessionId", sessionId)
-  ]);
+  Taro.setStorageSync("uid", uid);
+  Taro.setStorageSync("sessionId", sessionId);
 };
 
 const myRequest = async (url, method, body = {}) => {
@@ -33,7 +34,7 @@ const myRequest = async (url, method, body = {}) => {
   }).then(res => {
     return res.data;
   });
-
+  console.log(data);
   switch (data.errcode) {
     case 0:
       return data;

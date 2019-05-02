@@ -12,7 +12,7 @@ import getAuth from "./utils/getAuth";
 
 class App extends Component {
   config = {
-    pages: ["pages/index/index", "pages/my/my", "pages/bill/bill", "pages/test/test"],
+    pages: ["pages/index/index", "pages/my/my", "pages/bill/bill", "pages/test/test","pages/createLedger/createLedger"],
     window: {
       backgroundColor: "#f2f2f7",
       backgroundTextStyle: "light",
