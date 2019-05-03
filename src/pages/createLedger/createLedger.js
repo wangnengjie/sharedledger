@@ -21,6 +21,19 @@ class CreateLedger extends Component {
     };
   }
 
+  onGetUserInfo(e) {
+    const userInfo = e.detail.userInfo;
+    if (!globalData.auth && userInfo) {
+      events.trigger("setUserInfo", userInfo);
+      events.trigger("setAuth", !this.state.auth);
+      myRequest("/user", "PUT", {
+        uid: Taro.getStorageSync("uid"),
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName
+      });
+    }
+  }
+
   handleInput(e) {
     const text = e.detail.value;
     this.setState({ ledgerName: text });
@@ -34,14 +47,16 @@ class CreateLedger extends Component {
     this.setState({ focus: false });
   }
 
-  createLedger() {
+  async createLedger() {
     if (!globalData.auth) return;
     const ledgerName = this.state.ledgerName;
-    const data = myRequest("/ledger", "POST", { ledgerName });
+    const data = await myRequest("/ledger", "POST", { ledgerName });
     if (data !== null) {
       events.trigger("createLedger", { ledgerName, ledgerId: data.ledgerId });
-      Taro.navigateTo({
-        path: "/pages/inviteFriend/inviteFriend"
+      Taro.redirectTo({
+        url: `/pages/inviteFriend/inviteFriend?ledgerId=${
+          data.ledgerId
+        }&ledgerName=${ledgerName}`
       });
     }
   }

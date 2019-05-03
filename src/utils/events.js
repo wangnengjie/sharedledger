@@ -7,7 +7,9 @@ const tempLedgerData = {};
 
 events.on("getIndex", obj => {
   const { done, run, ledger } = obj;
-  Object.assign(globalData, done, run, ledger);
+  globalData.run = run;
+  globalData.done = done;
+  globalData.ledger = ledger;
 });
 
 events.on("setAuth", auth => {
@@ -15,16 +17,18 @@ events.on("setAuth", auth => {
 });
 
 events.on("setUserInfo", userInfo => {
-  Object.assign(globalData, userInfo);
+  globalData.userInfo = userInfo;
 });
 
 events.on("createLedger", obj => {
-  globalData.run.unshift({ ...obj, done: false });
+  const newRun = globalData.run.concat();
+  newRun.unshift({ ...obj, done: false });
+  globalData.run = newRun;
 });
 
-events.on("switchLedger", obj => {
-  globalData.ledger = obj;
-})
+events.on("switchLedger", ledger => {
+  globalData.ledger = ledger;
+});
 
 // events.on("addOne", this.handleAddOne);
 

@@ -15,11 +15,11 @@ class inviteFriend extends Component {
     this.onShareAppMessage = this.onShareAppMessage.bind(this);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { ledgerId, ledgerName } = this.$router.params;
     console.log(ledgerId, ledgerName);
     this.setState({ ledgerName });
-    const data = myRequest("/invitation", "POST", { ledgerId });
+    const data = await myRequest("/invitation", "POST", { ledgerId });
     if (data !== null) {
       this.setState({ invitationKey: data.invitationKey });
     }

@@ -58,16 +58,20 @@ class Index extends Component {
   eventsSuccessInvite(ledger) {
     const run = this.state.run;
     const { ledgerName, ledgerId, done } = ledger;
+    const newRun = run.concat();
+    newRun.unshift(ledgerId, ledgerName, done);
     this.setState({
-      run: run.slice().unshift(ledgerId, ledgerName, done),
+      run: newRun,
       ...ledger
     });
   }
 
-  eventsCreatLedger(obj) {
+  async eventsCreatLedger(obj) {
     const run = this.state.run;
-    this.setState({ run: run.slice().unshift({ ...obj, done: false }) });
-    const data = myRequest("ledger", "GET", { ledgerId: obj.ledgerId });
+    const newRun = run.concat();
+    newRun.unshift({ ...obj, done: false });
+    this.setState({ run: newRun });
+    const data = await myRequest("/ledger", "GET", { ledgerId: obj.ledgerId });
     if (data !== null) {
       events.trigger("switchLedger", data.ledger);
     }
@@ -92,8 +96,8 @@ class Index extends Component {
     });
   }
 
-  handleSwitchLedger(ledgerId) {
-    const data = myRequest("ledger", "GET", { ledgerId });
+  async handleSwitchLedger(ledgerId) {
+    const data = await myRequest("ledger", "GET", { ledgerId });
     if (data !== null) {
       events.trigger("switchLedger", data.ledger);
     }
@@ -205,7 +209,8 @@ class Index extends Component {
       userIn[e.uid] = e;
     });
     //处理账本
-    const _run = run.slice();
+    // console.log(run);
+    const _run = run.concat();
     let i = _run.findIndex(e => e.ledgerId === ledgerId);
     _run.unshift(_run[i]);
     _run.splice(i + 1, 1);
@@ -265,7 +270,7 @@ class Index extends Component {
                       <View
                         key={e.ledgerId}
                         className='account-line'
-                        onClick={this.handleSwitchLedger.bind(this,e.ledgerId)}
+                        onClick={this.handleSwitchLedger.bind(this, e.ledgerId)}
                       >
                         <Text>{e.ledgerName}</Text>
                       </View>
