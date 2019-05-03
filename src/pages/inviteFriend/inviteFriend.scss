@@ -1,0 +1,47 @@
+.invite-bar {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  Text {
+    text-align: center;
+    display: block;
+    color: rgba(84, 84, 84, 1);
+    width: fit-content;
+  }
+  .invite-ledgerName {
+    font-size: 48px;
+    font-weight: 600;
+    padding-top: 100px;
+    margin: 0 auto;
+  }
+  .invite-success {
+    font-size: 36px;
+    font-weight: 400;
+    margin: 20px auto 56px auto;
+  }
+  image {
+    display: block;
+    width: 445px;
+    height: 445px;
+    margin: 0 auto 150px auto;
+  }
+  View {
+    height: fit-content;
+    button {
+      margin: 0 auto 150px auto;
+      width: 690px;
+      height: 84px;
+      background-color: #5b78f9;
+      border-radius: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      Text {
+        margin: auto;
+        font-size: 36px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+}

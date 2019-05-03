@@ -37,8 +37,8 @@ class inviteFriend extends Component {
     return (
       <View>
         <View className='invite-bar'>
-          <Text>{this.state.ledgerName}</Text>
-          <Text>创建成功</Text>
+          <Text className='invite-ledgerName'>{this.state.ledgerName}</Text>
+          <Text className='invite-success'>创建成功</Text>
           <Image src={invite} />
           <View>
             <Button hover-class='none' openType='share'>

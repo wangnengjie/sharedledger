@@ -61,6 +61,10 @@ class CreateLedger extends Component {
     }
   }
 
+  navigateBack() {
+    Taro.navigateBack();
+  }
+
   render() {
     return (
       <View>
@@ -86,10 +90,12 @@ class CreateLedger extends Component {
         >
           <Text>创建账本</Text>
         </Button>
-        <Button hover-class='none' className='btn-cancel'>
-          <Navigator openType='navigateBack'>
-            <Text>返回</Text>
-          </Navigator>
+        <Button
+          hover-class='none'
+          className='btn-cancel'
+          onClick={this.navigateBack}
+        >
+          <Text>返回</Text>
         </Button>
       </View>
     );
