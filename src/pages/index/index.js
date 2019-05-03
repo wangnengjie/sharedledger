@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Image, Button, Navigator } from "@tarojs/components";
+import { View, Text, Image, Button } from "@tarojs/components";
 import "./index.scss";
 import "./welcome.scss";
 import events, { globalData } from "../../utils/events";
@@ -20,9 +20,12 @@ class Index extends Component {
     super(props);
     this.eventsGetIndex = this.eventsGetIndex.bind(this);
     this.eventsSuccessInvite = this.eventsSuccessInvite.bind(this);
+    this.eventsCreatLedger = this.eventsCreatLedger.bind(this);
+    this.eventsSwitchLedger = this.eventsSwitchLedger.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
+    this.handleSwitchLedger = this.handleSwitchLedger.bind(this);
     this.onGetUserInfo = this.onGetUserInfo.bind(this);
     this.state = {
       slide: false,
@@ -61,6 +64,19 @@ class Index extends Component {
     });
   }
 
+  eventsCreatLedger(obj) {
+    const run = this.state.run;
+    this.setState({ run: run.slice().unshift({ ...obj, done: false }) });
+    const data = myRequest("ledger", "GET", { ledgerId: obj.ledgerId });
+    if (data !== null) {
+      events.trigger("switchLedger", data.ledger);
+    }
+  }
+
+  eventsSwitchLedger(obj) {
+    this.setState({ ...obj });
+  }
+
   handleSlide() {
     this.setState(prevState => ({ slide: !prevState.slide }));
   }
@@ -74,6 +90,13 @@ class Index extends Component {
         onSure() {}
       }
     });
+  }
+
+  handleSwitchLedger(ledgerId) {
+    const data = myRequest("ledger", "GET", { ledgerId });
+    if (data !== null) {
+      events.trigger("switchLedger", data.ledger);
+    }
   }
 
   async handleInvite(invitationKey) {
@@ -93,12 +116,11 @@ class Index extends Component {
 
   onGetUserInfo(e) {
     const userInfo = e.detail.userInfo;
-    if (!this.state.auth && userInfo) {
+    if (!globalData.auth && userInfo) {
       events.trigger("setUserInfo", userInfo);
       events.trigger("setAuth", !this.state.auth);
       this.setState(prevState => ({
-        auth: !prevState.auth,
-        userInfo
+        auth: !prevState.auth
       }));
       myRequest("/user", "PUT", {
         uid: Taro.getStorageSync("uid"),
@@ -123,11 +145,12 @@ class Index extends Component {
     //事件挂载
     events.on("getIndex", this.eventsGetIndex);
     events.on("successInvite", this.eventsSuccessInvite);
+    events.on("createLedger", this.eventsCreatLedger);
+    events.on("switchLedger", this.eventsSwitchLedger);
     //用户登录
     await myLogin();
     //获取用户授权信息
     const auth = (await getAuth()) || false;
-    this.setState({ auth });
     events.trigger("setAuth", auth);
     if (auth) {
       //这一步放异步
@@ -163,6 +186,8 @@ class Index extends Component {
   componentWillUnmount() {
     events.off("getIndex", this.eventsGetIndex);
     events.off("successInvite", this.eventsSuccessInvite);
+    events.off("createLedger", this.eventsCreatLedger);
+    events.off("switchLedger", this.eventsSwitchLedger);
   }
 
   componentDidShow() {
@@ -200,14 +225,16 @@ class Index extends Component {
             <View className='welcome-bar'>
               <Image src={welcome} />
               <Text>还没有账本，快去创建你的账本吧！</Text>
-              <Button
-                hover-class='none'
-                openType='getUserInfo'
-                bindgetuserinfo={this.onGetUserInfo}
-                onClick={this.navigateToCreateLedger}
-              >
-                <Text>创建账本</Text>
-              </Button>
+              <View>
+                <Button
+                  hover-class='none'
+                  openType='getUserInfo'
+                  bindgetuserinfo={this.onGetUserInfo}
+                  onClick={this.navigateToCreateLedger}
+                >
+                  <Text>创建账本</Text>
+                </Button>
+              </View>
             </View>
           </View>
         )}
@@ -238,7 +265,7 @@ class Index extends Component {
                       <View
                         key={e.ledgerId}
                         className='account-line'
-                        onClick={this.handleSlide}
+                        onClick={this.handleSwitchLedger.bind(this,e.ledgerId)}
                       >
                         <Text>{e.ledgerName}</Text>
                       </View>

@@ -12,10 +12,18 @@ events.on("getIndex", obj => {
 
 events.on("setAuth", auth => {
   globalData.auth = auth;
-})
+});
 
 events.on("setUserInfo", userInfo => {
   Object.assign(globalData, userInfo);
+});
+
+events.on("createLedger", obj => {
+  globalData.run.unshift({ ...obj, done: false });
+});
+
+events.on("switchLedger", obj => {
+  globalData.ledger = obj;
 })
 
 // events.on("addOne", this.handleAddOne);
