@@ -1,0 +1,99 @@
+.ledger-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 690px;
+  height: 146px;
+  margin: 15px auto;
+  background: white;
+  box-shadow: 0px 28px 87px 0px rgba(43, 29, 85, 0.02);
+  border-radius: 15px;
+}
+
+.ledger-check {
+  width: 120px;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  View {
+    width: 40px;
+    height: 120px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    Text {
+      width: 18px;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 36px;
+    }
+  }
+}
+
+.ledger-run {
+  View {
+    background-color: #798cff;
+    Text {
+      color: white;
+    }
+  }
+}
+
+.ledger-done {
+  View {
+    background-color: transparent;
+    border: 1px solid #5b78f9;
+    Text {
+      color: #5b78f9;
+    }
+  }
+}
+
+.ledger-name-bar {
+  width: 270px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  Text {
+    font-size: 33px;
+    font-weight: 400;
+    color: black;
+  }
+}
+
+.ledger-btn {
+  width: 300px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  View {
+    width: 130px;
+    height: 56px;
+    border-radius: 28px;
+    text-align: center;
+    Text {
+      font-size: 30px;
+      font-weight: 400;
+    }
+  }
+  .ledger-btn-check {
+    background-color: #5b78f9;
+    margin: auto 10px auto 0;
+    Text {
+      color: #ffffff;
+    }
+  }
+  .ledger-btn-delete {
+    margin: auto 20px auto 10px;
+    background-color: transparent;
+    border: 1px solid rgba(91, 120, 249, 1);
+    Text {
+      color: rgba(91, 120, 249, 1);
+    }
+  }
+}

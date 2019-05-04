@@ -1,6 +1,8 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import events, { globalData } from "../../utils/events";
+import "./my.scss";
+import LedgerCard from "../../Components/LedgerCard/LedgerCard";
 
 class My extends Component {
   config = {
@@ -10,11 +12,22 @@ class My extends Component {
 
   constructor(props) {
     super(props);
-    const { run, done } = globalData;
-    this.state = { run, done };
+    this.state = {
+      run: [],
+      done: []
+    };
   }
 
-  componentDidMount() {}
+  handleDetail(ledgerId) {}
+
+  handleCheck(ledgerId) {}
+
+  handleDelete(ledgerId) {}
+
+  componentWillMount() {
+    const { run, done } = globalData;
+    this.setState({ run, done });
+  }
 
   componentDidShow() {
     this.$scope.getTabBar().setData({
@@ -22,10 +35,33 @@ class My extends Component {
     });
   }
 
-  componentWillUnmount() {}
-
   render() {
-    return <View />;
+    return (
+      <View className='my-main'>
+        {this.state.run.map(ledger => {
+          return (
+            <LedgerCard
+              key={ledger.ledgerId}
+              ledger={ledger}
+              handleCheck={this.handleCheck}
+              handleDelete={this.handleDelete}
+              handleDetail={this.handleDetail}
+            />
+          );
+        })}
+        {this.state.done.map(ledger => {
+          return (
+            <LedgerCard
+              key={ledger.ledgerId}
+              ledger={ledger}
+              handleCheck={this.handleCheck}
+              handleDelete={this.handleDelete}
+              handleDetail={this.handleDetail}
+            />
+          );
+        })}
+      </View>
+    );
   }
 }
 

@@ -36,7 +36,17 @@ class CreateLedger extends Component {
 
   handleInput(e) {
     const text = e.detail.value;
-    this.setState({ ledgerName: text });
+    let slength = 0;
+    for (i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i) >= 0 && text.charCodeAt(i) <= 255)
+        slength = slength + 1;
+      else slength = slength + 2;
+      if (slength > 20) {
+        this.setState({ ledgerName: text.slice(0, i) });
+        return text.slice(0, i);
+      }
+    }
+
   }
 
   handleFocus() {
