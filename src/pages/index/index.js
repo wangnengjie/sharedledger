@@ -26,14 +26,15 @@ class Index extends Component {
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
     this.handleSwitchLedger = this.handleSwitchLedger.bind(this);
+    this.handleOnSure = this.handleOnSure.bind(this);
     this.onGetUserInfo = this.onGetUserInfo.bind(this);
     this.state = {
       slide: false,
       curtain: {
         isOpened: false,
         msg: "",
-        onClose() {},
-        onSure() {}
+        type: 0,
+        extraMsg: ""
       },
       run: [],
       ledgerId: "",
@@ -90,10 +91,27 @@ class Index extends Component {
       curtain: {
         isOpened: false,
         msg: "",
-        onClose() {},
-        onSure() {}
+        type: 0,
+        extraMsg: ""
       }
     });
+  }
+
+  handleOnSure() {
+    const type = this.state.curtain.type;
+    switch (type) {
+      case 1:
+        this.handleInvite(this.state.invitationKey);
+        break;
+      case 2:
+        // 结算
+        break;
+      case 3:
+        // 删除bill
+        break;
+      default:
+        break;
+    }
   }
 
   async handleSwitchLedger(ledgerId) {
@@ -122,10 +140,7 @@ class Index extends Component {
     const userInfo = e.detail.userInfo;
     if (!globalData.auth && userInfo) {
       events.trigger("setUserInfo", userInfo);
-      events.trigger("setAuth", !this.state.auth);
-      this.setState(prevState => ({
-        auth: !prevState.auth
-      }));
+      events.trigger("setAuth", true);
       myRequest("/user", "PUT", {
         uid: Taro.getStorageSync("uid"),
         avatarUrl: userInfo.avatarUrl,
@@ -175,13 +190,12 @@ class Index extends Component {
     //处理邀请逻辑
     if (invitationKey) {
       this.setState({
+        invitationKey,
         curtain: {
           isOpened: true,
           msg: `确认加入账本 ${ledgerName} 吗`,
-          onClose: that.handleCloseCurtain,
-          onSure: () => {
-            that.handleInvite(invitationKey);
-          }
+          type: 1,
+          extraMsg: ""
         }
       });
     }
@@ -220,12 +234,17 @@ class Index extends Component {
         {/* 幕帘 */}
 
         {curtain.isOpened && (
-          <Curtain curtain={curtain} onGetUserInfo={this.onGetUserInfo} />
+          <Curtain
+            msg={curtain.msg}
+            onSure={this.handleOnSure}
+            onClose={this.handleCloseCurtain}
+            onGetUserInfo={this.onGetUserInfo}
+          />
         )}
 
         {/* welcome */}
 
-        {run.length === 0 && (
+        {!run.length && (
           <View>
             <View className='welcome-bar'>
               <Image src={welcome} />
@@ -234,7 +253,7 @@ class Index extends Component {
                 <Button
                   hover-class='none'
                   openType='getUserInfo'
-                  bindgetuserinfo={this.onGetUserInfo}
+                  onGetUserInfo={this.onGetUserInfo}
                   onClick={this.navigateToCreateLedger}
                 >
                   <Text>创建账本</Text>
@@ -245,7 +264,7 @@ class Index extends Component {
         )}
 
         {/* 账目详情 */}
-        {run.length > 0 && (
+        {run.length && (
           <View>
             {/* slideBar */}
             <View className='head-bar'>

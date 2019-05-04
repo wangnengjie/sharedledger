@@ -1,0 +1,65 @@
+.curtain-bar {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  top: 0;
+  left: 0;
+}
+
+.curtain-main {
+  position: relative;
+  z-index: 1000;
+  opacity: 1;
+  width: 690px;
+  height: 325px;
+  margin: 300px auto auto auto;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  .curtain-msg {
+    height: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    Text {
+      width: 500px;
+      height: fit-content;
+      margin: auto;
+    }
+  }
+  .curtain-btn {
+    height: 125px;
+    width: 100%;
+    display: flex;
+    button {
+      width: 140px;
+      height: 56px;
+      border-radius: 28px;
+      text-align: center;
+      Text {
+        font-size: 30px;
+        font-weight: 400;
+        margin: auto;
+      }
+    }
+  }
+  .curtain-btn-sure {
+    margin: auto 75px auto 130px;
+    background-color: #5b78f9;
+    Text {
+      color: white;
+    }
+  }
+  .curtain-btn-cancel {
+    margin: auto 130px auto 75px;
+    background-color: transparent;
+    border: 0.8px solid #5b78f9;
+    Text {
+      color: #5b78f9;
+    }
+  }
+}

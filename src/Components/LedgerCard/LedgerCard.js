@@ -5,7 +5,7 @@ import { myRequest } from "../../utils/myRequest";
 
 class LedgerCard extends Component {
   render() {
-    const { handleCheck, handleDelete, handleDetail } = this.props;
+    const { onCheck, onDelete, onDetail } = this.props;
     const { done, ledgerName, ledgerId } = this.props.ledger;
     return (
       <View className='ledger-card'>
@@ -21,7 +21,7 @@ class LedgerCard extends Component {
 
         <View
           className='ledger-name-bar'
-          onClick={() => handleDetail(ledgerId)}
+          onClick={() => onDetail(ledgerId)}
         >
           <Text>{ledgerName}</Text>
         </View>
@@ -30,7 +30,7 @@ class LedgerCard extends Component {
           {!done && (
             <View
               className='ledger-btn-check'
-              onClick={() => handleCheck(ledgerId)}
+              onClick={() => onCheck(ledgerId)}
             >
               <Text>结账</Text>
             </View>
@@ -38,7 +38,7 @@ class LedgerCard extends Component {
 
           <View
             className='ledger-btn-delete'
-            onClick={() => handleDelete(ledgerId)}
+            onClick={() => onDelete(ledgerId)}
           >
             <Text>删除</Text>
           </View>
@@ -54,9 +54,9 @@ LedgerCard.defaultProps = {
     ledgerName: "",
     ledgerId: 0
   },
-  handleCheck() {},
-  handleDelete() {},
-  handleDetail() {}
+  onCheck() {},
+  onDelete() {},
+  onDetail() {}
 };
 
 export default LedgerCard;

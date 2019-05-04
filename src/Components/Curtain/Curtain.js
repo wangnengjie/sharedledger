@@ -1,26 +1,34 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Button } from "@tarojs/components";
+import "./Curtain.scss";
 
 class Curtain extends Component {
   render() {
-    const { msg, onClose, onSure } = this.props.curtain;
-    console.log(this.props.curtain);
-    const onGetUserInfo = this.props.onGetUserInfo;
+    const { msg, onSure, onClose,onGetUserInfo } = this.props;
     return (
-      <View>
-        <View>
-          <Text>{msg}</Text>
-        </View>
-        <View>
-          <Button onClick={onClose} hover-class='none'>取消</Button>
-          <Button
-            onClick={onSure}
-            hover-class='none'
-            openType='getUserInfo'
-            bindgetuserinfo={onGetUserInfo}
-          >
-            确定
-          </Button>
+      <View className='curtain-bar'>
+        <View className='curtain-main'>
+          <View className='curtain-msg'>
+            <Text>{msg}</Text>
+          </View>
+          <View className='curtain-btn'>
+            <Button
+              onClick={onSure}
+              hover-class='none'
+              openType='getUserInfo'
+              onGetUserInfo={onGetUserInfo}
+              className='curtain-btn-sure'
+            >
+              <Text>确定</Text>
+            </Button>
+            <Button
+              className='curtain-btn-cancel'
+              onClick={onClose}
+              hover-class='none'
+            >
+              <Text>取消</Text>
+            </Button>
+          </View>
         </View>
       </View>
     );
@@ -28,12 +36,10 @@ class Curtain extends Component {
 }
 
 Curtain.defaultProps = {
-  curtain: {
-    msg: "",
-    onClose() {},
-    onSure() {}
-  },
-  onGetUserInfo() {}
+  msg: "",
+  onGetUserInfo: null,
+  onSure: null,
+  onClose: null
 };
 
 export default Curtain;

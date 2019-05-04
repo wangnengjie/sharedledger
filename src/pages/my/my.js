@@ -18,11 +18,17 @@ class My extends Component {
     };
   }
 
-  handleDetail(ledgerId) {}
+  handleDetail(ledgerId) {
+    console.log("aaa");
+  }
 
-  handleCheck(ledgerId) {}
+  handleCheck(ledgerId) {
+    console.log("aaa");
+  }
 
-  handleDelete(ledgerId) {}
+  handleDelete(ledgerId) {
+    console.log("aaa");
+  }
 
   componentWillMount() {
     const { run, done } = globalData;
@@ -43,9 +49,9 @@ class My extends Component {
             <LedgerCard
               key={ledger.ledgerId}
               ledger={ledger}
-              handleCheck={this.handleCheck}
-              handleDelete={this.handleDelete}
-              handleDetail={this.handleDetail}
+              onCheck={this.handleCheck}
+              onDelete={this.handleDelete}
+              onDetail={this.handleDetail}
             />
           );
         })}
@@ -54,9 +60,9 @@ class My extends Component {
             <LedgerCard
               key={ledger.ledgerId}
               ledger={ledger}
-              handleCheck={this.handleCheck}
-              handleDelete={this.handleDelete}
-              handleDetail={this.handleDetail}
+              onCheck={this.handleCheck}
+              onDelete={this.handleDelete}
+              onDetail={this.handleDetail}
             />
           );
         })}
