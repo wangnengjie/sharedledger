@@ -2,32 +2,19 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import events, { globalData } from "../../utils/events";
 
-export default class My extends Component {
+class My extends Component {
   config = {
-    navigationBarTitleText: "我的",
+    navigationBarTitleText: "我的账本",
     usingComponents: {}
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      msg: ""
-    };
-    this.handleClick = this.handleClick.bind(this);
-    events.on("test", this.handleClick);
+    const { run, done } = globalData;
+    this.state = { run, done };
   }
 
-  handleClick(msg) {
-    this.setState({ msg });
-  }
-
-  componentWillMount() {
-    this.setState({ msg: globalData.msg });
-  }
-
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
 
   componentDidShow() {
     this.$scope.getTabBar().setData({
@@ -38,10 +25,8 @@ export default class My extends Component {
   componentWillUnmount() {}
 
   render() {
-    return (
-      <View>
-        ???<Text>???{this.state.msg}</Text>
-      </View>
-    );
+    return <View />;
   }
 }
+
+export default My;
