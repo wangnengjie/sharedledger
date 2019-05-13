@@ -13,7 +13,8 @@ import welcome from "../../images/welcome.png";
 class Index extends Component {
   config = {
     navigationBarTitleText: "共享账本",
-    usingComponents: {}
+    usingComponents: {},
+    enablePullDownRefresh: true
   };
 
   constructor(props) {
@@ -60,7 +61,7 @@ class Index extends Component {
     const run = this.state.run;
     const { ledgerName, ledgerId, done } = ledger;
     const newRun = run.concat();
-    newRun.unshift(ledgerId, ledgerName, done);
+    newRun.unshift({ ledgerId, ledgerName, done });
     this.setState({
       run: newRun,
       ...ledger
@@ -115,10 +116,11 @@ class Index extends Component {
   }
 
   async handleSwitchLedger(ledgerId) {
-    const data = await myRequest("ledger", "GET", { ledgerId });
+    const data = await myRequest("/ledger", "GET", { ledgerId });
     if (data !== null) {
       events.trigger("switchLedger", data.ledger);
     }
+    this.setState({ slide: false });
   }
 
   async handleInvite(invitationKey) {
@@ -134,19 +136,27 @@ class Index extends Component {
         this.handleCloseCurtain();
       }
     }
+    this.handleCloseCurtain();
   }
 
   onGetUserInfo(e) {
     const userInfo = e.detail.userInfo;
     if (!globalData.auth && userInfo) {
-      events.trigger("setUserInfo", userInfo);
-      events.trigger("setAuth", true);
+      globalData.userInfo = userInfo;
+      globalData.auth = true;
       myRequest("/user", "PUT", {
         uid: Taro.getStorageSync("uid"),
         avatarUrl: userInfo.avatarUrl,
         nickName: userInfo.nickName
       });
     }
+  }
+
+  async onPullDownRefresh() {
+    const data = await myRequest("/ledger", "GET", {
+      ledgerId: this.state.ledgerId
+    });
+    events.trigger("switchLedger", data.ledger);
   }
 
   navigateToCreateLedger() {
@@ -158,7 +168,6 @@ class Index extends Component {
 
   async componentWillMount() {
     const that = this;
-    const { invitationKey, ledgerName } = this.$router.params;
     //显示加载中
     Taro.showLoading({ title: "程序初始化中", mask: true });
     //事件挂载
@@ -170,13 +179,13 @@ class Index extends Component {
     await myLogin();
     //获取用户授权信息
     const auth = (await getAuth()) || false;
-    events.trigger("setAuth", auth);
+    globalData.auth = auth;
     if (auth) {
       //这一步放异步
       Taro.getUserInfo().then(res => {
         const userInfo = res.userInfo;
         that.setState({ userInfo });
-        events.trigger("setUserInfo", userInfo);
+        globalData.userInfo = userInfo;
         myRequest("/user", "PUT", {
           uid: Taro.getStorageSync("uid"),
           nickName: userInfo.nickName,
@@ -188,6 +197,7 @@ class Index extends Component {
     const data = await myRequest("/index", "GET");
     events.trigger("getIndex", data);
     //处理邀请逻辑
+    const { invitationKey, ledgerName } = this.$router.params;
     if (invitationKey) {
       this.setState({
         invitationKey,

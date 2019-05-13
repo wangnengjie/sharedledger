@@ -12,14 +12,6 @@ events.on("getIndex", obj => {
   globalData.ledger = ledger;
 });
 
-events.on("setAuth", auth => {
-  globalData.auth = auth;
-});
-
-events.on("setUserInfo", userInfo => {
-  globalData.userInfo = userInfo;
-});
-
 events.on("createLedger", obj => {
   const newRun = globalData.run.concat();
   newRun.unshift({ ...obj, done: false });
@@ -27,6 +19,14 @@ events.on("createLedger", obj => {
 });
 
 events.on("switchLedger", ledger => {
+  globalData.ledger = ledger;
+});
+
+events.on("successInvite", ledger => {
+  const newRun = globalData.run.concat();
+  const { ledgerName, ledgerId, done } = ledger;
+  newRun.unshift({ ledgerId, ledgerName, done });
+  globalData.run = newRun;
   globalData.ledger = ledger;
 });
 

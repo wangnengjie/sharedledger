@@ -1,6 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text } from "@tarojs/components";
+import { View, Text, Button } from "@tarojs/components";
 import events, { globalData } from "../../utils/events";
+import { myRequest } from "../../utils/myRequest";
 import "./my.scss";
 import LedgerCard from "../../Components/LedgerCard/LedgerCard";
 
@@ -16,6 +17,26 @@ class My extends Component {
       run: [],
       done: []
     };
+  }
+
+  onGetUserInfo(e) {
+    const userInfo = e.detail.userInfo;
+    if (!globalData.auth && userInfo) {
+      globalData.userInfo = userInfo;
+      globalData.auth = true;
+      myRequest("/user", "PUT", {
+        uid: Taro.getStorageSync("uid"),
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName
+      });
+    }
+  }
+
+  navigateToCreateLedger() {
+    if (!globalData.auth) return;
+    Taro.navigateTo({
+      url: "/pages/createLedger/createLedger"
+    });
   }
 
   handleDetail(ledgerId) {
@@ -66,6 +87,16 @@ class My extends Component {
             />
           );
         })}
+        <View className='my-createLedger-btn'>
+          <Button
+            hover-class='none'
+            openType='getUserInfo'
+            onGetUserInfo={this.onGetUserInfo}
+            onClick={this.navigateToCreateLedger}
+          >
+            <Text>创建账本</Text>
+          </Button>
+        </View>
       </View>
     );
   }

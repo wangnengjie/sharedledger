@@ -25,6 +25,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     Text {
       width: 500px;
       height: fit-content;
@@ -40,6 +41,10 @@
       height: 56px;
       border-radius: 28px;
       text-align: center;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       Text {
         font-size: 30px;
         font-weight: 400;

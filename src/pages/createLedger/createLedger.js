@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Input, Button, Navigator } from "@tarojs/components";
+import { View, Text, Input, Button } from "@tarojs/components";
 import "./createLedger.scss";
 import { myRequest } from "../../utils/myRequest";
 import events, { globalData } from "../../utils/events";
@@ -24,8 +24,8 @@ class CreateLedger extends Component {
   onGetUserInfo(e) {
     const userInfo = e.detail.userInfo;
     if (!globalData.auth && userInfo) {
-      events.trigger("setUserInfo", userInfo);
-      events.trigger("setAuth", !this.state.auth);
+      globalData.userInfo = userInfo;
+      globalData.auth = true;
       myRequest("/user", "PUT", {
         uid: Taro.getStorageSync("uid"),
         avatarUrl: userInfo.avatarUrl,
@@ -37,16 +37,16 @@ class CreateLedger extends Component {
   handleInput(e) {
     const text = e.detail.value;
     let slength = 0;
-    for (i = 0; i < text.length; i++) {
-      if (text.charCodeAt(i) >= 0 && text.charCodeAt(i) <= 255)
-        slength = slength + 1;
-      else slength = slength + 2;
+    for (let i = 0; i < text.length; i++) {
+      if (text.charCodeAt(i) >= 0 && text.charCodeAt(i) <= 255) slength++;
+      else slength += 2;
       if (slength > 20) {
         this.setState({ ledgerName: text.slice(0, i) });
         return text.slice(0, i);
+      } else {
+        this.setState({ ledgerName: text });
       }
     }
-
   }
 
   handleFocus() {
@@ -81,7 +81,6 @@ class CreateLedger extends Component {
         <Text className='crte-text'>输入账本名称</Text>
         <Input
           className='input-bar'
-          maxlength='10'
           onInput={this.handleInput}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
