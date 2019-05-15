@@ -1,9 +1,9 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Text, Button } from "@tarojs/components";
 import { globalData } from "../utils/events";
+import { myRequest } from "../utils/myRequest";
 import "./index.scss";
 import addOneBall from "./addOneBall.png";
-import getAuth from "../utils/getAuth";
 
 class TabBar extends Component {
   constructor(props) {
@@ -40,6 +40,19 @@ class TabBar extends Component {
       });
   }
 
+  onGetUserInfo(e) {
+    const userInfo = e.detail.userInfo;
+    if (!globalData.auth && userInfo) {
+      globalData.userInfo = userInfo;
+      globalData.auth = true;
+      myRequest("/user", "PUT", {
+        uid: Taro.getStorageSync("uid"),
+        avatarUrl: userInfo.avatarUrl,
+        nickName: userInfo.nickName
+      });
+    }
+  }
+
   render() {
     const { list, selected } = this.state;
     return (
@@ -68,7 +81,7 @@ class TabBar extends Component {
           hoverClass='none'
           className='addOneBall'
           onClick={this.navigateToBillPage}
-          bindgetuserinfo
+          onGetuserinfo={this.onGetUserInfo}
         >
           <Image src={addOneBall} />
         </Button>
