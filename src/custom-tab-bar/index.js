@@ -32,12 +32,16 @@ class TabBar extends Component {
   }
 
   navigateToBillPage() {
-    globalData.auth &&
-      Taro.navigateTo({
-        url: `/pages/bill/bill?type=add&page=index&ledgerId=${
-          globalData.ledgerId
-        }`
-      });
+    if (!globalData.auth) return;
+    if (!globalData.run || !globalData.run.length) {
+      Taro.showToast({ title: "您没有未结账本哦", icon: "none" });
+      return;
+    }
+    Taro.navigateTo({
+      url: `/pages/bill/bill?page=index&ledgerId=${
+        globalData.ledgerId
+      }`
+    });
   }
 
   onGetUserInfo(e) {

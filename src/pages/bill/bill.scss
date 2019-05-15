@@ -1,0 +1,78 @@
+$header-height: 135px;
+$view-padding: 30px;
+Page {
+  background-color: white;
+}
+.bill-header-bar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  .bill-header-bcg {
+    z-index: 1;
+    height: $header-height;
+    width: 100%;
+    background-color: #5352e4;
+  }
+  .bill-header-ledgerName {
+    position: absolute;
+    z-index: 2;
+    top: $header-height/2;
+    left: 30px;
+    width: 690px;
+    height: $header-height;
+    border-radius: 15px;
+    box-shadow: 0px 23px 75px 0px rgba(238, 239, 244, 1);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    Text {
+      margin-left: 67px;
+      font-size: 30px;
+      font-weight: 400;
+    }
+  }
+}
+
+.bill-input-bar {
+  width: 690px;
+  margin: (2 * $header-height - 60px) auto 0 auto;
+  padding: $view-padding 0;
+  .bill-input-pl {
+    width: 100%;
+    margin: 0 auto 30px 30px;
+    Text {
+      font-size: 30px;
+      font-weight: 400;
+      color: rgba(84, 84, 84, 1);
+    }
+  }
+  .bill-input-input {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    View {
+      width: 490px;
+      height: 120px;
+      margin: auto 15px;
+      box-shadow: 0px 0px 200px 20px rgba(238, 239, 244, 1);
+      border-radius: 15px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      input {
+        padding-left: 55px;
+        font-size: 48px;
+        font-weight: 400;
+        color: rgba(82, 81, 227, 1);
+      }
+    }
+    Text {
+      margin-left: 45px;
+      font-size: 48px;
+      font-weight: 400;
+      color: rgba(136, 136, 136, 1);
+    }
+  }
+}
