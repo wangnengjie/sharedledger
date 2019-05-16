@@ -39,7 +39,7 @@ class TabBar extends Component {
     }
     Taro.navigateTo({
       url: `/pages/bill/bill?page=index&ledgerId=${
-        globalData.ledgerId
+        globalData.ledger.ledgerId
       }`
     });
   }

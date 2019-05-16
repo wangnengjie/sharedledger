@@ -5,7 +5,7 @@ import "./ExtendDots.scss";
 class ExtendDots extends Component {
   render() {
     return (
-      <View className='extend-dots' onClick={this.props.handleClick}>
+      <View className='extend-dots' onClick={this.props.onClick}>
         {Array(4).map((e, index) => (
           <View key={index} />
         ))}
@@ -15,7 +15,7 @@ class ExtendDots extends Component {
 }
 
 ExtendDots.defaultProps = {
-  handleClick() {}
+  onClick() {}
 };
 
 export default ExtendDots;

@@ -23,6 +23,7 @@ class Index extends Component {
     this.eventsSuccessInvite = this.eventsSuccessInvite.bind(this);
     this.eventsCreatLedger = this.eventsCreatLedger.bind(this);
     this.eventsSwitchLedger = this.eventsSwitchLedger.bind(this);
+    this.eventsAddOne = this.eventsAddOne.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
@@ -81,6 +82,14 @@ class Index extends Component {
 
   eventsSwitchLedger(obj) {
     this.setState({ ...obj });
+  }
+
+  eventsAddOne(detail) {
+    if (detail.ledgerId === this.state.ledgerId) {
+      const bills = this.state.bills;
+      bills.unshift(detail.bill);
+      this.setState({ bills });
+    }
   }
 
   handleSlide() {
@@ -175,6 +184,7 @@ class Index extends Component {
     events.on("successInvite", this.eventsSuccessInvite);
     events.on("createLedger", this.eventsCreatLedger);
     events.on("switchLedger", this.eventsSwitchLedger);
+    events.on("addOne", this.eventsAddOne);
     //用户登录
     await myLogin();
     //获取用户授权信息
@@ -216,6 +226,7 @@ class Index extends Component {
     events.off("successInvite", this.eventsSuccessInvite);
     events.off("createLedger", this.eventsCreatLedger);
     events.off("switchLedger", this.eventsSwitchLedger);
+    events.off("addOne", this.eventsAddOne);
   }
 
   componentDidShow() {

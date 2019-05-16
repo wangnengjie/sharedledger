@@ -30,7 +30,11 @@ events.on("successInvite", ledger => {
   globalData.ledger = ledger;
 });
 
-// events.on("addOne", this.handleAddOne);
+events.on("addOne", detail => {
+  if (detail.ledgerId === globalData.ledger.ledgerId) {
+    globalData.ledger.bill.unshift(detail.bill);
+  }
+});
 
 // events.on("fix", this.handleFix);
 

@@ -8,6 +8,7 @@ import events, {
   tempBillData,
   tempLedgerData
 } from "../../utils/events";
+import { myRequest } from "../../utils/myRequest";
 import "./bill.scss";
 import setting from "../../images/setting.png";
 
@@ -19,18 +20,19 @@ class Bill extends Component {
     super(props);
     this.initialize = this.initialize.bind(this);
     this.handleAddOne = this.handleAddOne.bind(this);
-    this.handleFix = this.handleFix.bind(this);
     this.handleTextareaInput = this.handleTextareaInput.bind(this);
     this.handleMoneyInput = this.handleMoneyInput.bind(this);
     this.handlePayerSwitch = this.handlePayerSwitch.bind(this);
+    this.handleSwitchCategory = this.handleSwitchCategory.bind(this);
     this.state = {
       description: "",
       money: "",
-      page: "",
       ledgerId: 0,
       ledgerName: "",
       categories: [],
-      users: []
+      users: [],
+      extendUsers: false,
+      extendCategories: false
     };
   }
 
@@ -66,21 +68,62 @@ class Bill extends Component {
     for (let i = 0; i < categories.length; i++) {
       categories[i].selected = false;
     }
-    categories.length && (categories[0].selected = true);
 
     // 初始化数据
     this.setState({
-      page,
-      ledgerId,
+      ledgerId: parseInt(ledgerId),
       ledgerName,
       categories,
       users
     });
   }
 
-  handleAddOne() {}
-
-  handleFix() {}
+  async handleAddOne() {
+    const { ledgerId, money, users, categories, description } = this.state;
+    if (money === "" || Number.isNaN(money)) {
+      Taro.showToast({ title: "请输入正确的金额", icon: "none" });
+      return;
+    }
+    let payer = null;
+    let participants = [];
+    users.forEach(user => {
+      let temp = JSON.parse(JSON.stringify(user));
+      user.selected && participants.push(temp);
+      user.isPayer && (payer = temp);
+    });
+    if (!payer || !participants.length) {
+      Taro.showToast({
+        title: "至少需要一位付款人和一位参与人哦~",
+        icon: "none"
+      });
+      return;
+    }
+    participants.forEach(participant => {
+      delete participant.selected;
+      delete participant.isPayer;
+    });
+    delete payer.selected;
+    delete payer.isPayer;
+    let category = categories.find(e => e.selected) || {};
+    const body = {
+      ledgerId,
+      bill: {
+        payer,
+        money,
+        category,
+        description,
+        users: participants
+      }
+    };
+    console.log(body);
+    const data = await myRequest("/bill", "POST", body);
+    if (data) {
+      events.trigger("addOne", {
+        ledgerId,
+        bill: { billId: data.billId, createTime: data.createTime, ...body.bill }
+      });
+    }
+  }
 
   handleTextareaInput(e) {
     this.setState({ description: e.detail.value });
@@ -113,13 +156,43 @@ class Bill extends Component {
     this.setState({ users });
   }
 
+  handleSwitchCategory(index) {
+    const categories = this.state.categories;
+    const state = categories[index].selected;
+    for (let i = 0; i < categories.length; i++) {
+      categories[i].selected = false;
+    }
+    categories[index].selected = !state;
+    this.setState({ categories });
+  }
+
+  goBack() {
+    Taro.navigateBack({});
+  }
+
+  extendCategories() {
+    const state = this.state.extendCategories;
+    this.setState({ extendCategories: !state });
+  }
+
+  extendUsers() {
+    const state = this.state.extendUsers;
+    this.setState({ extendUsers: !state });
+  }
+
   componentWillMount() {
     const { page, ledgerId } = this.$router.params;
     this.initialize(page, ledgerId);
   }
 
   render() {
-    const { ledgerId, ledgerName, users, categories } = this.state;
+    const {
+      ledgerName,
+      users,
+      categories,
+      extendCategories,
+      extendUsers
+    } = this.state;
 
     return (
       <View>
@@ -172,18 +245,22 @@ class Bill extends Component {
             <Text>参与人</Text>
           </View>
           <View className='bill-users-box'>
-            {users.slice(0, 7).map((user, index) => {
-              return (
-                <UserBox
-                  key={user.uid}
-                  index={index}
-                  nickName={user.nickName}
-                  selected={user.selected}
-                  onClick={this.handleUserSwitch}
-                />
-              );
-            })}
-            {users.length >= 7 && <ExtendDots />}
+            {users
+              .slice(0, extendUsers ? users.length : 7)
+              .map((user, index) => {
+                return (
+                  <UserBox
+                    key={user.uid}
+                    index={index}
+                    nickName={user.nickName}
+                    selected={user.selected}
+                    onClick={this.handleUserSwitch}
+                  />
+                );
+              })}
+            {users.length >= 7 && extendUsers && (
+              <ExtendDots onClick={this.extendUsers} />
+            )}
           </View>
         </View>
 
@@ -196,16 +273,21 @@ class Bill extends Component {
             </View>
           </View>
           <View className='bill-category-box'>
-            {categories.slice(0, 7).map((category, index) => {
-              return (
-                <UseBox
-                  key={category.categoryId}
-                  category={category}
-                  index={index}
-                />
-              );
-            })}
-            {users.length >= 7 && <ExtendDots />}
+            {categories
+              .slice(0, extendCategories ? categories.length : 7)
+              .map((category, index) => {
+                return (
+                  <UseBox
+                    key={category.categoryId}
+                    category={category}
+                    index={index}
+                    onClick={this.handleSwitchCategory}
+                  />
+                );
+              })}
+            {categories.length >= 7 && extendCategories && (
+              <ExtendDots onClick={this.extendCategories} />
+            )}
           </View>
         </View>
 
@@ -219,10 +301,10 @@ class Bill extends Component {
         </View>
 
         <View className='bill-btn-bar'>
-          <View className='bill-btn-sure'>
+          <View className='bill-btn-sure' onClick={this.handleAddOne}>
             <Text>完成</Text>
           </View>
-          <View className='bill-btn-cancel'>
+          <View className='bill-btn-cancel' onClick={this.goBack}>
             <Text>取消</Text>
           </View>
         </View>
