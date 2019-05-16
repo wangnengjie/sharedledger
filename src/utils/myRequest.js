@@ -8,10 +8,12 @@ const myLogin = async () => {
     method: "GET",
     url: route + "/session",
     data: { code }
-  }).then(res => {
-    console.log(res.data);
-    return res.data;
-  });
+  })
+    .then(res => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch(err => console.log(err));
 
   if (errcode !== 0) {
     Taro.showToast({
@@ -31,9 +33,9 @@ const myRequest = async (url, method, body = {}) => {
     method: method,
     url: route + url,
     data: body
-  }).then(res => {
-    return res.data;
-  });
+  })
+    .then(res => res.data)
+    .catch(err => console.log(err));
   console.log(data);
   switch (data.errcode) {
     case 0:
