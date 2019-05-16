@@ -5,35 +5,35 @@ import UseBox from "../UseBox/UseBox";
 import "./BillCard.scss";
 
 class BillCard extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.handleFix = this.handleFix.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-  handleFix(){
-    const {billInfo,index} = this.props;
+  handleFix() {
+    const { billInfo, index } = this.props;
     //跳转传参，JSON.Stringify(billInfo)，pagepath，index
   }
 
-  handleDelete(){
-    const {billInfo,index} = this.props;
+  handleDelete() {
+    const { billInfo, index } = this.props;
     //跳转传参，JSON.Stringify(billInfo)，pagepath，index
   }
 
   render() {
     const {
-      date,
+      createTime,
       payer,
-      participant,
+      users,
       money,
-      use,
-      comment
+      category,
+      description
     } = this.props.billInfo;
 
-    const { members, done, uid } = this.props;
-
-    let time = new Date(date);
+    const { done, uid } = this.props;
+    category.selected = true;
+    let time = new Date(createTime);
     time = `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日`;
 
     return (
@@ -47,7 +47,7 @@ class BillCard extends Component {
             <Text>付款人</Text>
           </View>
           <View className='infoBox-info'>
-            <UserBox nickName={members[payer].nickName} isPayer />
+            <UserBox nickName={payer.nickName} isPayer />
           </View>
         </View>
 
@@ -56,8 +56,8 @@ class BillCard extends Component {
             <Text>参与人</Text>
           </View>
           <View className='infoBox-info'>
-            {participant.map(p => (
-              <UserBox key={p} nickName={members[p].nickName} selected />
+            {users.map(user => (
+              <UserBox key={user.uid} nickName={user.nickName} selected />
             ))}
           </View>
         </View>
@@ -67,33 +67,33 @@ class BillCard extends Component {
             <Text>金额</Text>
           </View>
           <View className='infoBox-info'>
-            <Text className='infoText-money'>{money}元</Text>
+            <Text className='infoText-money'>{money / 100}元</Text>
           </View>
         </View>
 
-        {use !== "" && (
+        {category.categoryId !== 0 && (
           <View className='BillCard-infoBox'>
             <View className='infoBox-label'>
               <Text>用途</Text>
             </View>
             <View className='infoBox-info'>
-              <UseBox use={use} />
+              <UseBox category={category} />
             </View>
           </View>
         )}
 
-        {comment !== "" && (
+        {description !== "" && (
           <View className='BillCard-infoBox'>
             <View className='infoBox-label'>
               <Text>备注</Text>
             </View>
             <View className='infoBox-info'>
-              <Text className='infoText-comment'>{comment}</Text>
+              <Text className='infoText-comment'>{description}</Text>
             </View>
           </View>
         )}
 
-        {!done && uid === payer && (
+        {!done && uid === payer.uid && (
           <View className='BillCard-fixLine'>
             <View className='fixLine-fix' onClick={this.handleFix}>
               <Text>修改</Text>
@@ -116,8 +116,8 @@ BillCard.defaultProps = {
     money: 0,
     use: "",
     comment: "",
-    billId:"",
-    opacity:1
+    billId: "",
+    opacity: 1
   },
   members: {},
   done: false

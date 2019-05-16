@@ -32,7 +32,7 @@ events.on("successInvite", ledger => {
 
 events.on("addOne", detail => {
   if (detail.ledgerId === globalData.ledger.ledgerId) {
-    globalData.ledger.bill.unshift(detail.bill);
+    globalData.ledger.bills.unshift(detail.bill);
   }
 });
 

@@ -93,7 +93,7 @@ class Bill extends Component {
     });
     if (!payer || !participants.length) {
       Taro.showToast({
-        title: "至少需要一位付款人和一位参与人哦~",
+        title: "至少需要一位参与人哦~",
         icon: "none"
       });
       return;
@@ -236,7 +236,7 @@ class Bill extends Component {
                 />
               );
             })}
-            {users.length >= 3 && <ExtendDots />}
+            {users.length > 3 && <ExtendDots />}
           </View>
         </View>
 
@@ -258,7 +258,7 @@ class Bill extends Component {
                   />
                 );
               })}
-            {users.length >= 7 && extendUsers && (
+            {users.length > 7 && extendUsers && (
               <ExtendDots onClick={this.extendUsers} />
             )}
           </View>
@@ -285,7 +285,7 @@ class Bill extends Component {
                   />
                 );
               })}
-            {categories.length >= 7 && extendCategories && (
+            {categories.length > 7 && extendCategories && (
               <ExtendDots onClick={this.extendCategories} />
             )}
           </View>
