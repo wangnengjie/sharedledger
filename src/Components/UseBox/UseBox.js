@@ -4,23 +4,26 @@ import "./UseBox.scss";
 
 class UseBox extends Component {
   render() {
-    const { use, selected, handleClick, index } = this.props;
+    const { category, handleClick, index } = this.props;
     const className = `UseBox ${
-      selected ? "UseBox-selected" : "UseBox-unselected"
-      }`;
+      category.selected ? "UseBox-selected" : "UseBox-unselected"
+    }`;
     return (
       <View className={className} onClick={e => handleClick(index, e)}>
-        <Text>{use}</Text>
+        <Text>{category.categoryName}</Text>
       </View>
     );
   }
 }
 
 UseBox.defaultProps = {
-  selected: true,
-  use: "",
+  category: {
+    selected: false,
+    categoryName: "",
+    categoryId:0
+  },
   index: 0,
-  handleClick() { }
+  handleClick() {}
 };
 
 export default UseBox;

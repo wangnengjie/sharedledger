@@ -4,14 +4,14 @@ import "./UserBox.scss";
 
 class UserBox extends Component {
   render() {
-    const { selected, nickName, handleClick, index, isPayer } = this.props;
+    const { selected, nickName, onClick, index, isPayer } = this.props;
     const className = `UserBox ${
       selected ? "UserBox-selected" : "UserBox-unselected"
     }`;
     return (
       <View
         className={className + (isPayer ? " payer" : "")}
-        onClick={e => handleClick(index, e)}
+        onClick={() => onClick(index)}
       >
         <Text>{nickName}</Text>
       </View>
@@ -24,7 +24,7 @@ UserBox.defaultProps = {
   nickName: "",
   index: 0,
   isPayer: false,
-  handleClick() {}
+  onClick() {}
 };
 
 export default UserBox;
