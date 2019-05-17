@@ -332,7 +332,6 @@ class Index extends Component {
                   billInfo={e}
                   members={userIn}
                   key={e.billId}
-                  uid={Taro.getStorageSync("uid")}
                   index={index}
                 />
               ))}

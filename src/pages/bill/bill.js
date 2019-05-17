@@ -41,7 +41,6 @@ class Bill extends Component {
     // 从主页进来加一笔
     let ledger = null;
     if (page === "index") {
-      console.log(globalData);
       ledger = JSON.parse(JSON.stringify(globalData.ledger));
     } else {
       ledger = JSON.parse(JSON.stringify(tempLedgerData));
@@ -113,7 +112,6 @@ class Bill extends Component {
         users: participants
       }
     };
-    console.log(body);
     const data = await myRequest("/bill", "POST", body);
     if (data) {
       events.trigger("addOne", {
