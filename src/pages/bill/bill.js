@@ -38,8 +38,6 @@ class Bill extends Component {
 
   initialize(page, ledgerId) {
     const uid = Taro.getStorageSync("uid");
-    //加一笔
-    events.on("addOne", this.handleAddOne);
     // 从主页进来加一笔
     let ledger = null;
     if (page === "index") {
@@ -104,7 +102,7 @@ class Bill extends Component {
     });
     delete payer.selected;
     delete payer.isPayer;
-    let category = categories.find(e => e.selected) || {};
+    let category = categories.find(e => e.selected) || { categoryId: 0 };
     const body = {
       ledgerId,
       bill: {
@@ -122,6 +120,7 @@ class Bill extends Component {
         ledgerId,
         bill: { billId: data.billId, createTime: data.createTime, ...body.bill }
       });
+      Taro.navigateBack({});
     }
   }
 

@@ -31,7 +31,8 @@ class BillCard extends Component {
       description
     } = this.props.billInfo;
 
-    const { done, uid } = this.props;
+    const done = this.props.done;
+    const uid = Taro.getStorageSync("uid");
     category.selected = true;
     let time = new Date(createTime);
     time = `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日`;
@@ -110,16 +111,13 @@ class BillCard extends Component {
 
 BillCard.defaultProps = {
   billInfo: {
-    date: "",
-    payer: "",
-    participant: [],
+    createTime: 0,
+    payer: {},
+    users: [],
     money: 0,
-    use: "",
-    comment: "",
-    billId: "",
-    opacity: 1
+    category: {},
+    description: ""
   },
-  members: {},
   done: false
 };
 
