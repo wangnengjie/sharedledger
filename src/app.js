@@ -2,8 +2,6 @@ import "@tarojs/async-await";
 import Taro, { Component } from "@tarojs/taro";
 import Index from "./pages/index";
 import "./app.scss";
-import events from "./utils/events";
-import getAuth from "./utils/getAuth";
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
@@ -18,7 +16,8 @@ class App extends Component {
       "pages/bill/bill",
       "pages/test/test",
       "pages/createLedger/createLedger",
-      "pages/inviteFriend/inviteFriend"
+      "pages/inviteFriend/inviteFriend",
+      "pages/ledgerDetail/ledgerDetail"
     ],
     window: {
       backgroundColor: "#f2f2f7",
