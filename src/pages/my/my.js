@@ -4,6 +4,7 @@ import events, { globalData } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
 import "./my.scss";
 import LedgerCard from "../../Components/LedgerCard/LedgerCard";
+import Curtain from "../../Components/Curtain/Curtain";
 
 class My extends Component {
   config = {
@@ -13,9 +14,18 @@ class My extends Component {
 
   constructor(props) {
     super(props);
+    this.eventsSuccessInvite = this.eventsSuccessInvite.bind(this);
+    this.eventsCreateLedger = this.eventsCreateLedger.bind(this);
+    this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.state = {
       run: [],
-      done: []
+      done: [],
+      curtain: {
+        isOpened: false,
+        msg: "",
+        type: 0,
+        extraMsg: ""
+      }
     };
   }
 
@@ -39,6 +49,19 @@ class My extends Component {
     });
   }
 
+  eventsSuccessInvite(ledger) {
+    const run = this.state.run.concat();
+    const { ledgerName, ledgerId, done } = JSON.parse(JSON.stringify(ledger));
+    run.unshift({ ledgerName, ledgerId, done });
+    this.setState({ run });
+  }
+
+  eventsCreateLedger(obj) {
+    const run = this.state.run.concat();
+    run.unshift({ ...obj, done: false });
+    this.setState({ run });
+  }
+
   handleDetail(ledgerId) {
     console.log("aaa");
   }
@@ -47,12 +70,55 @@ class My extends Component {
     console.log("aaa");
   }
 
-  handleDelete(ledgerId) {
-    console.log("aaa");
+  handleDelete(ledgerId, isDone) {
+    this.setState({
+      curtain: {
+        isOpened: true,
+        msg: "确定要删除账本吗",
+        type: 1,
+        extraMsg: [ledgerId, isDone]
+      }
+    });
+  }
+
+  async handleSuccessDelete(ledgerId, isDone) {
+    const data = await myRequest("/ledger", "DELETE", { ledgerId });
+    if (data) {
+      let array = isDone ? this.state.done.concat() : this.state.run.concat();
+      array = array.filter(e => e.ledgerId !== ledgerId);
+      isDone ? this.setState({ done: array }) : this.setState({ run: array });
+      events.trigger("deleteLedger", ledgerId, isDone);
+    }
+  }
+
+  handleCloseCurtain() {
+    this.setState({
+      curtain: {
+        isOpened: false,
+        msg: "",
+        type: 0,
+        extraMsg: ""
+      }
+    });
+  }
+
+  async handleOnSure() {
+    const type = this.state.curtain.type;
+    switch (type) {
+      case 1:
+        // 删除账本
+        await this.handleSuccessDelete(...this.state.curtain.extraMsg);
+        this.handleCloseCurtain();
+        break;
+      default:
+        break;
+    }
   }
 
   componentWillMount() {
-    const { run, done } = globalData;
+    events.on("successInvite", this.eventsSuccessInvite);
+    events.on("createLedger", this.eventsCreateLedger);
+    const { run, done } = JSON.parse(JSON.stringify(globalData));
     this.setState({ run, done });
   }
 
@@ -62,28 +128,51 @@ class My extends Component {
     });
   }
 
+  componentWillUnmount() {
+    events.off("successInvite", this.eventsSuccessInvite);
+    events.off("createLedger", this.eventsCreateLedger);
+  }
+
   render() {
+    const { curtain, run, done } = this.state;
     return (
       <View className='my-main'>
-        {this.state.run.map(ledger => {
+        {curtain.isOpened && (
+          <Curtain
+            msg={curtain.msg}
+            onSure={this.handleOnSure}
+            onClose={this.handleCloseCurtain}
+            onGetUserInfo={this.onGetUserInfo}
+          />
+        )}
+
+        {run.map(ledger => {
           return (
             <LedgerCard
               key={ledger.ledgerId}
               ledger={ledger}
-              onCheck={this.handleCheck}
-              onDelete={this.handleDelete}
-              onDetail={this.handleDetail}
+              onCheck={this.handleCheck.bind(this, ledger.ledgerId)}
+              onDelete={this.handleDelete.bind(
+                this,
+                ledger.ledgerId,
+                ledger.done
+              )}
+              onDetail={this.handleDetail.bind(this, ledger.ledgerId)}
             />
           );
         })}
-        {this.state.done.map(ledger => {
+        {done.map(ledger => {
           return (
             <LedgerCard
               key={ledger.ledgerId}
               ledger={ledger}
-              onCheck={this.handleCheck}
-              onDelete={this.handleDelete}
-              onDetail={this.handleDetail}
+              onCheck={this.handleCheck.bind(this, ledger.ledgerId)}
+              onDelete={this.handleDelete.bind(
+                this,
+                ledger.ledgerId,
+                ledger.done
+              )}
+              onDetail={this.handleDetail.bind(this, ledger.ledgerId)}
             />
           );
         })}

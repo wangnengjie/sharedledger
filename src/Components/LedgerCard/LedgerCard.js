@@ -5,7 +5,7 @@ import "./LedgerCard.scss";
 class LedgerCard extends Component {
   render() {
     const { onCheck, onDelete, onDetail } = this.props;
-    const { done, ledgerName, ledgerId } = this.props.ledger;
+    const { done, ledgerName} = this.props.ledger;
     return (
       <View className='ledger-card'>
         <View
@@ -20,7 +20,7 @@ class LedgerCard extends Component {
 
         <View
           className='ledger-name-bar'
-          onClick={() => onDetail(ledgerId)}
+          onClick={onDetail}
         >
           <Text>{ledgerName}</Text>
         </View>
@@ -29,7 +29,7 @@ class LedgerCard extends Component {
           {!done && (
             <View
               className='ledger-btn-check'
-              onClick={() => onCheck(ledgerId)}
+              onClick={onCheck}
             >
               <Text>结账</Text>
             </View>
@@ -37,7 +37,7 @@ class LedgerCard extends Component {
 
           <View
             className='ledger-btn-delete'
-            onClick={() => onDelete(ledgerId)}
+            onClick={onDelete}
           >
             <Text>删除</Text>
           </View>

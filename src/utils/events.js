@@ -13,9 +13,9 @@ events.on("getIndex", obj => {
 });
 
 events.on("createLedger", obj => {
-  const newRun = globalData.run.concat();
-  newRun.unshift({ ...obj, done: false });
-  globalData.run = newRun;
+  const run = globalData.run.concat();
+  run.unshift({ ...obj, done: false });
+  globalData.run = run;
 });
 
 events.on("switchLedger", ledger => {
@@ -23,10 +23,10 @@ events.on("switchLedger", ledger => {
 });
 
 events.on("successInvite", ledger => {
-  const newRun = globalData.run.concat();
+  const run = globalData.run.concat();
   const { ledgerName, ledgerId, done } = JSON.parse(JSON.stringify(ledger));
-  newRun.unshift({ ledgerId, ledgerName, done });
-  globalData.run = newRun;
+  run.unshift({ ledgerId, ledgerName, done });
+  globalData.run = run;
   globalData.ledger = ledger;
 });
 
@@ -34,6 +34,22 @@ events.on("addOne", detail => {
   if (detail.ledgerId === globalData.ledger.ledgerId) {
     globalData.ledger.bills.unshift(detail.bill);
   }
+});
+
+events.on("deleteBill", (ledgerId, billId) => {
+  if (ledgerId === globalData.ledger.ledgerId) {
+    const bills = globalData.ledger.bills.concat();
+    const index = bills.findIndex(bill => billId === bill.billId);
+    if (index < 0) return;
+    bills.splice(index, 1);
+    globalData.ledger.bills = bills;
+  }
+});
+
+events.on("deleteLedger", (ledgerId, isDone) => {
+  let array = isDone ? globalData.done.concat() : globalData.run.concat();
+  array = array.filter(e => e.ledgerId !== ledgerId);
+  isDone ? (globalData.done = array) : (globalData.run = array);
 });
 
 // events.on("fix", this.handleFix);

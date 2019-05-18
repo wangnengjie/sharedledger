@@ -24,11 +24,13 @@ class Index extends Component {
     this.eventsCreatLedger = this.eventsCreatLedger.bind(this);
     this.eventsSwitchLedger = this.eventsSwitchLedger.bind(this);
     this.eventsAddOne = this.eventsAddOne.bind(this);
+    this.eventsDeleteLedger = this.eventsDeleteLedger.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
     this.handleSwitchLedger = this.handleSwitchLedger.bind(this);
     this.handleOnSure = this.handleOnSure.bind(this);
+    this.handleDeleteBill = this.handleDeleteBill.bind(this);
     this.onGetUserInfo = this.onGetUserInfo.bind(this);
     this.state = {
       slide: false,
@@ -59,21 +61,19 @@ class Index extends Component {
   }
 
   eventsSuccessInvite(ledger) {
-    const run = this.state.run;
+    const run = this.state.run.concat();
     const { ledgerName, ledgerId, done } = ledger;
-    const newRun = run.concat();
-    newRun.unshift({ ledgerId, ledgerName, done });
+    run.unshift({ ledgerId, ledgerName, done });
     this.setState({
-      run: newRun,
+      run,
       ...ledger
     });
   }
 
   async eventsCreatLedger(obj) {
-    const run = this.state.run;
-    const newRun = run.concat();
-    newRun.unshift({ ...obj, done: false });
-    this.setState({ run: newRun });
+    const run = this.state.run.concat();
+    run.unshift({ ...obj, done: false });
+    this.setState({ run });
     const data = await myRequest("/ledger", "GET", { ledgerId: obj.ledgerId });
     if (data !== null) {
       events.trigger("switchLedger", data.ledger);
@@ -92,6 +92,14 @@ class Index extends Component {
     }
   }
 
+  eventsDeleteLedger(ledgerId, isDone) {
+    if (isDone) return;
+    let run = this.state.run.concat();
+    run = run.filter(e => e.ledgerId !== ledgerId);
+    this.handleSwitchLedger(run[0].ledgerId);
+    this.setState({ run });
+  }
+
   handleSlide() {
     this.setState(prevState => ({ slide: !prevState.slide }));
   }
@@ -107,17 +115,28 @@ class Index extends Component {
     });
   }
 
-  handleOnSure() {
+  async handleOnSure() {
     const type = this.state.curtain.type;
     switch (type) {
       case 1:
-        this.handleInvite(this.state.invitationKey);
+        await this.handleInvite(this.state.invitationKey);
+        this.handleCloseCurtain();
         break;
       case 2:
         // 结算
         break;
       case 3:
-        // 删除bill
+        const [billId, ledgerId] = this.state.curtain.extraMsg;
+        const data = await myRequest("/bill", "DELETE", { billId, ledgerId });
+        if (data) {
+          events.trigger("deleteBill", this.state.ledgerId, billId);
+          const bills = this.state.bills;
+          const index = bills.findIndex(bill => billId === bill.billId);
+          if (index < 0) return;
+          bills.splice(index, 1);
+          this.setState({ bills });
+        }
+        this.handleCloseCurtain();
         break;
       default:
         break;
@@ -142,10 +161,19 @@ class Index extends Component {
       if (ledger) {
         events.trigger("successInvite", ledger.ledger);
         Taro.showToast({ title: "成功加入账本", icon: "none" });
-        this.handleCloseCurtain();
       }
     }
-    this.handleCloseCurtain();
+  }
+
+  handleDeleteBill(billId, ledgerId) {
+    this.setState({
+      curtain: {
+        isOpened: true,
+        msg: "确认要删除该笔账单吗",
+        type: 3,
+        extraMsg: [billId, ledgerId]
+      }
+    });
   }
 
   onGetUserInfo(e) {
@@ -185,6 +213,7 @@ class Index extends Component {
     events.on("createLedger", this.eventsCreatLedger);
     events.on("switchLedger", this.eventsSwitchLedger);
     events.on("addOne", this.eventsAddOne);
+    events.on("deleteLedger", this.eventsDeleteLedger);
     //用户登录
     await myLogin();
     //获取用户授权信息
@@ -205,7 +234,9 @@ class Index extends Component {
     }
     //获取首页信息,事件中会关闭加载中图标
     const data = await myRequest("/index", "GET");
-    events.trigger("getIndex", data);
+    if (data) {
+      events.trigger("getIndex", data);
+    }
     //处理邀请逻辑
     const { invitationKey, ledgerName } = this.$router.params;
     if (invitationKey) {
@@ -227,6 +258,7 @@ class Index extends Component {
     events.off("createLedger", this.eventsCreatLedger);
     events.off("switchLedger", this.eventsSwitchLedger);
     events.off("addOne", this.eventsAddOne);
+    events.off("deleteLedger", this.eventsDeleteLedger);
   }
 
   componentDidShow() {
@@ -295,28 +327,33 @@ class Index extends Component {
                   this.state.slide ? "view-slide" : ""
                 }`}
               >
-                {_run.map((e, index) =>
-                  index === 0 ? (
-                    <View
-                      key={e.ledgerId}
-                      className='account-line'
-                      onClick={this.handleSlide}
-                    >
-                      <Text>{e.ledgerName}</Text>
-                    </View>
-                  ) : (
-                    <fragment>
-                      <View className='line' />
+                {_run
+                  .slice(0, this.state.slide ? _run.length : 1)
+                  .map((e, index) =>
+                    index === 0 ? (
                       <View
                         key={e.ledgerId}
                         className='account-line'
-                        onClick={this.handleSwitchLedger.bind(this, e.ledgerId)}
+                        onClick={this.handleSlide}
                       >
                         <Text>{e.ledgerName}</Text>
                       </View>
-                    </fragment>
-                  )
-                )}
+                    ) : (
+                      <fragment>
+                        <View className='line' />
+                        <View
+                          key={e.ledgerId}
+                          className='account-line'
+                          onClick={this.handleSwitchLedger.bind(
+                            this,
+                            e.ledgerId
+                          )}
+                        >
+                          <Text>{e.ledgerName}</Text>
+                        </View>
+                      </fragment>
+                    )
+                  )}
                 <View className='slide-button' onClick={this.handleSlide}>
                   <Image
                     src={arrow}
@@ -333,6 +370,11 @@ class Index extends Component {
                   members={userIn}
                   key={e.billId}
                   index={index}
+                  onDelete={this.handleDeleteBill.bind(
+                    this,
+                    e.billId,
+                    ledgerId
+                  )}
                 />
               ))}
             </View>

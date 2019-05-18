@@ -5,7 +5,6 @@ import ExtendDots from "../../Components/ExtendDots/ExtendDots";
 import UseBox from "../../Components/UseBox/UseBox";
 import events, {
   globalData,
-  tempBillData,
   tempLedgerData
 } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";

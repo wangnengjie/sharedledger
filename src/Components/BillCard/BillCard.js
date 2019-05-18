@@ -8,15 +8,9 @@ class BillCard extends Component {
   constructor(props) {
     super(props);
     this.handleFix = this.handleFix.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleFix() {
-    const { billInfo, index } = this.props;
-    //跳转传参，JSON.Stringify(billInfo)，pagepath，index
-  }
-
-  handleDelete() {
     const { billInfo, index } = this.props;
     //跳转传参，JSON.Stringify(billInfo)，pagepath，index
   }
@@ -31,7 +25,7 @@ class BillCard extends Component {
       description
     } = this.props.billInfo;
 
-    const done = this.props.done;
+    const { done, onDelete } = this.props;
     const uid = Taro.getStorageSync("uid");
     category.selected = true;
     let time = new Date(createTime);
@@ -99,7 +93,7 @@ class BillCard extends Component {
             <View className='fixLine-fix' onClick={this.handleFix}>
               <Text>修改</Text>
             </View>
-            <View className='fixLine-delete' onClick={this.handleDelete}>
+            <View className='fixLine-delete' onClick={onDelete}>
               <Text>删除</Text>
             </View>
           </View>
