@@ -25,6 +25,7 @@ class Index extends Component {
     this.eventsSwitchLedger = this.eventsSwitchLedger.bind(this);
     this.eventsAddOne = this.eventsAddOne.bind(this);
     this.eventsDeleteLedger = this.eventsDeleteLedger.bind(this);
+    this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
@@ -100,6 +101,16 @@ class Index extends Component {
     this.setState({ run });
   }
 
+  eventsDeleteBill(ledgerId, billId) {
+    if (ledgerId === this.state.ledgerId) {
+      const bills = this.state.bills;
+      const index = bills.findIndex(bill => billId === bill.billId);
+      if (index < 0) return;
+      bills.splice(index, 1);
+      this.setState({ bills });
+    }
+  }
+
   handleSlide() {
     this.setState(prevState => ({ slide: !prevState.slide }));
   }
@@ -129,12 +140,7 @@ class Index extends Component {
         const [billId, ledgerId] = this.state.curtain.extraMsg;
         const data = await myRequest("/bill", "DELETE", { billId, ledgerId });
         if (data) {
-          events.trigger("deleteBill", this.state.ledgerId, billId);
-          const bills = this.state.bills;
-          const index = bills.findIndex(bill => billId === bill.billId);
-          if (index < 0) return;
-          bills.splice(index, 1);
-          this.setState({ bills });
+          events.trigger("deleteBill", ledgerId, billId);
         }
         this.handleCloseCurtain();
         break;
@@ -214,6 +220,7 @@ class Index extends Component {
     events.on("switchLedger", this.eventsSwitchLedger);
     events.on("addOne", this.eventsAddOne);
     events.on("deleteLedger", this.eventsDeleteLedger);
+    events.on("deleteBill", this.eventsDeleteBill);
     //用户登录
     await myLogin();
     //获取用户授权信息
@@ -259,6 +266,7 @@ class Index extends Component {
     events.off("switchLedger", this.eventsSwitchLedger);
     events.off("addOne", this.eventsAddOne);
     events.off("deleteLedger", this.eventsDeleteLedger);
+    events.off("deleteBill", this.eventsDeleteBill);
   }
 
   componentDidShow() {
