@@ -66,16 +66,22 @@ $cardWidth: 690px;
       text-align: center;
       Text {
         font-size: 30px;
-        color: white;
       }
     }
     .fixLine-fix {
       margin: 0 15px 0 300px;
       background-color: #5b78f9;
+      Text {
+        color: white;
+      }
     }
     .fixLine-delete {
       margin: 0 15px;
-      background-color: #dcdce2;
+      background-color: transparent;
+      border: 2px solid #5b78f9;
+      Text {
+        color: #5b78f9;
+      }
     }
   }
 }
