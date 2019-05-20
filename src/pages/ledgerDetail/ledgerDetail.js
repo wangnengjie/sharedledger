@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image, Button } from "@tarojs/components";
-import events, { globalData } from "../../utils/events";
+import events, { globalData, tempLedgerData } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
 import BillCard from "../../Components/BillCard/BillCard";
 import User from "../../Components/User/User";
@@ -20,6 +20,7 @@ class ledgerDetail extends Component {
     this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleOnSure = this.handleOnSure.bind(this);
+    this.handleAddOne = this.handleAddOne.bind(this);
     this.state = {
       curtain: {
         isOpened: false,
@@ -29,6 +30,7 @@ class ledgerDetail extends Component {
       },
       ledgerId: 0,
       ledgerName: "",
+      categories: [],
       users: [],
       bills: [],
       done: false
@@ -48,7 +50,13 @@ class ledgerDetail extends Component {
 
   handleActivate() {}
 
-  handleAddOne() {}
+  handleAddOne() {
+    const { users, categories, ledgerId, ledgerName } = this.state;
+    Object.assign(tempLedgerData, { users, categories, ledgerId, ledgerName });
+    Taro.navigateTo({
+      url: `/pages/bill/bill?page=ledgerDetail&ledgerId=${ledgerId}`
+    });
+  }
 
   handleDelete(billId, ledgerId) {
     this.setState({
@@ -115,8 +123,7 @@ class ledgerDetail extends Component {
     const data = await myRequest("/ledger", "GET", { ledgerId });
     if (data) {
       this.setState({
-        ...data.ledger,
-        ledgerId: parseInt(data.ledger.ledgerId)
+        ...data.ledger
       });
       Taro.setNavigationBarTitle({ title: data.ledger.ledgerName });
     }
@@ -132,7 +139,11 @@ class ledgerDetail extends Component {
     return (
       <View>
         {curtain.isOpened && (
-          <Curtain onClose={this.handleCloseCurtain} msg={curtain.msg} />
+          <Curtain
+            onSure={this.handleOnSure}
+            onClose={this.handleCloseCurtain}
+            msg={curtain.msg}
+          />
         )}
         <View
           className={
