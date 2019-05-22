@@ -18,9 +18,12 @@ class ledgerDetail extends Component {
     super(props);
     this.eventsAddOne = this.eventsAddOne.bind(this);
     this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
+    this.eventsLedgerActive = this.eventsLedgerActive.bind(this);
+    this.eventsLedgerCheckOut = this.eventsLedgerCheckOut.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleOnSure = this.handleOnSure.bind(this);
     this.handleAddOne = this.handleAddOne.bind(this);
+    this.handleCheck = this.handleCheck.bind(this);
     this.state = {
       curtain: {
         isOpened: false,
@@ -48,7 +51,14 @@ class ledgerDetail extends Component {
     });
   }
 
-  handleActivate() {}
+  async handleActivate() {
+    const ledgerId = this.state.ledgerId;
+    const data = await myRequest("/ledger", "PUT", { done: false, ledgerId });
+    if (data) {
+      events.trigger("ledgerActive", ledgerId);
+      this.setState({ done: false });
+    }
+  }
 
   handleAddOne() {
     const { users, categories, ledgerId, ledgerName } = this.state;
@@ -69,6 +79,17 @@ class ledgerDetail extends Component {
     });
   }
 
+  handleCheck(ledgerId) {
+    this.setState({
+      curtain: {
+        isOpened: true,
+        msg: "确定要结算账本吗",
+        type: 2,
+        extraMsg: ledgerId
+      }
+    });
+  }
+
   async handleOnSure() {
     const type = this.state.curtain.type;
     switch (type) {
@@ -80,7 +101,22 @@ class ledgerDetail extends Component {
         }
         this.handleCloseCurtain();
         break;
+      case 2:
+        const _ledgerId = this.state.curtain.extraMsg;
+        const _data = await myRequest("/ledger", "PUT", {
+          done: true,
+          ledgerId: _ledgerId
+        });
+        if (_data) {
+          events.trigger("ledgerCheckOut", _ledgerId);
+          Taro.navigateTo({
+            url: `/pages/checkOut/checkOut?ledgerId=${_ledgerId}`
+          });
+        }
+        this.handleCloseCurtain();
+        break;
       default:
+        this.handleCloseCurtain();
         break;
     }
   }
@@ -116,9 +152,23 @@ class ledgerDetail extends Component {
     }
   }
 
+  eventsLedgerActive(ledgerId) {
+    if (ledgerId === this.state.ledgerId) {
+      this.setState({ done: false });
+    }
+  }
+
+  eventsLedgerCheckOut(ledgerId) {
+    if (ledgerId === this.state.ledgerId) {
+      this.setState({ done: true });
+    }
+  }
+
   async componentWillMount() {
     events.on("addOne", this.eventsAddOne);
     events.on("deleteBill", this.eventsDeleteBill);
+    events.on("ledgerActive", this.eventsLedgerActive);
+    events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
     const ledgerId = this.$router.params.ledgerId;
     const data = await myRequest("/ledger", "GET", { ledgerId });
     if (data) {
@@ -132,6 +182,8 @@ class ledgerDetail extends Component {
   componentWillUnmount() {
     events.off("addOne", this.eventsAddOne);
     events.off("deleteBill", this.eventsDeleteBill);
+    events.off("ledgerActive", this.eventsLedgerActive);
+    events.off("ledgerCheckOut", this.eventsLedgerCheckOut);
   }
 
   render() {
@@ -205,6 +257,20 @@ class ledgerDetail extends Component {
                 onDelete={this.handleDelete.bind(this, bill.billId, ledgerId)}
               />
             ))}
+          </View>
+        </View>
+
+        <View className='detail-btn-bar'>
+          {!done && (
+            <View className='detail-btn-checkout'>
+              <Text>结账</Text>
+            </View>
+          )}
+          <View
+            className='detail-btn-return'
+            onClick={() => Taro.navigateBack({})}
+          >
+            <Text>返回</Text>
           </View>
         </View>
       </View>
