@@ -1,0 +1,36 @@
+.payment-card {
+  width: 690px;
+  display: flex;
+  justify-content: space-evenly;
+  margin: 30px auto;
+  height: 180px;
+  background-color: white;
+  border-radius: 20px;
+  .payment-user-box {
+  }
+  .payment-money-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    .money-box-text-1 {
+      font-size: 24px;
+      font-weight: 500;
+      color: rgba(136, 136, 136, 1);
+    }
+    image {
+      width: 249px;
+      height: 22px;
+    }
+    .money-box-text-2 {
+      font-size: 36px;
+      font-weight: 600;
+      color: rgba(114, 132, 237, 1);
+    }
+    .money-yuan{
+      font-size: 24px;
+      font-weight: normal;
+    }
+  }
+}

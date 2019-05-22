@@ -56,7 +56,7 @@ events.on("ledgerActive", ledgerId => {
   const run = globalData.run.concat();
   const done = globalData.done.concat();
   const index = done.findIndex(obj => {
-    obj.ledgerId === ledgerId;
+    return obj.ledgerId === ledgerId;
   });
   if (index < 0) return;
   const ledger = done.splice(index, 1);
@@ -70,7 +70,7 @@ events.on("ledgerCheckOut", ledgerId => {
   const run = globalData.run.concat();
   const done = globalData.done.concat();
   const index = run.findIndex(obj => {
-    obj.ledgerId === ledgerId;
+    return obj.ledgerId === ledgerId;
   });
   if (index < 0) return;
   const ledger = run.splice(index, 1);

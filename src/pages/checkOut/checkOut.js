@@ -1,5 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image, Button } from "@tarojs/components";
+import Payment from "../../Components/Payment/Payment";
 import { countMoney, checkOutPayment } from "../../utils/checkOut";
 import { myRequest } from "../../utils/myRequest";
 
@@ -25,7 +26,30 @@ class checkOut extends Component {
   }
 
   render() {
-    return <View />;
+    const { bills, users, ledgerName } = this.state;
+    const totalMoney = countMoney(bills);
+    const payments = checkOutPayment(bills, users);
+    return (
+      <View>
+        <View className='check-out-title'>
+          <Text>{ledgerName}  结算结果</Text>
+          <Text>合计金额</Text>
+          
+        </View>
+        <View>
+          {payments.map((payment, index) => {
+            return (
+              <Payment
+                from={payment.from}
+                to={payment.to}
+                money={payment.money}
+                key={index}
+              />
+            );
+          })}
+        </View>
+      </View>
+    );
   }
 }
 
