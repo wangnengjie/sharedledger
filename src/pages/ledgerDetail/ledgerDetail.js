@@ -166,6 +166,20 @@ class ledgerDetail extends Component {
     }
   }
 
+  naviToGraph() {
+    const { users, categories, ledgerId, ledgerName, bills } = this.state;
+    Object.assign(tempLedgerData, {
+      users,
+      categories,
+      ledgerId,
+      ledgerName,
+      bills
+    });
+    Taro.navigateTo({
+      url: "/pages/graph/graph"
+    });
+  }
+
   async componentWillMount() {
     events.on("addOne", this.eventsAddOne);
     events.on("deleteBill", this.eventsDeleteBill);
@@ -266,7 +280,7 @@ class ledgerDetail extends Component {
                   <Text>记一笔</Text>
                 </View>
               )}
-              <View className='title-btn-white'>
+              <View className='title-btn-white' onClick={this.naviToGraph}>
                 <Text>图表</Text>
               </View>
             </View>

@@ -18,7 +18,8 @@ class App extends Component {
       "pages/createLedger/createLedger",
       "pages/inviteFriend/inviteFriend",
       "pages/ledgerDetail/ledgerDetail",
-      "pages/checkOut/checkOut"
+      "pages/checkOut/checkOut",
+      "pages/graph/graph"
     ],
     window: {
       backgroundColor: "#f2f2f7",

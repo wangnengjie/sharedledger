@@ -22,8 +22,7 @@ const checkOutPayment = (bills, userList) => {
   });
   // 取2位小数
   uInfo.forEach(person => {
-    const { money } = person;
-    person.money = money / 100;
+    person.money = parseFloat((person.money / 100).toFixed(2));
   });
   // 排序
   uInfo.sort((a, b) => b.money - a.money);
