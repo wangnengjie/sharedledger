@@ -2,9 +2,11 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image, Button } from "@tarojs/components";
 import events, { globalData, tempLedgerData } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
+import { checkOutPayment } from "../../utils/checkOut";
 import BillCard from "../../Components/BillCard/BillCard";
 import User from "../../Components/User/User";
 import Curtain from "../../Components/Curtain/Curtain";
+import Payment from "../../Components/Payment/Payment";
 import "./ledgerDetail.scss";
 
 import inviteButton from "../../images/inviteButton.png";
@@ -188,6 +190,8 @@ class ledgerDetail extends Component {
 
   render() {
     const { ledgerId, users, bills, done, curtain } = this.state;
+    let payments = [];
+    done && (payments = checkOutPayment(bills, users));
     return (
       <View>
         {curtain.isOpened && (
@@ -228,6 +232,26 @@ class ledgerDetail extends Component {
             )}
           </View>
         </View>
+
+        {done && (
+          <View>
+            <View className='detail-title-bar'>
+              <Text>结算结果</Text>
+            </View>
+            <View>
+              {payments.map((payment, index) => {
+                return (
+                  <Payment
+                    from={payment.from}
+                    to={payment.to}
+                    money={payment.money}
+                    key={index}
+                  />
+                );
+              })}
+            </View>
+          </View>
+        )}
 
         <View className='detail-billCard-bar'>
           <View className='detail-title-bar'>
