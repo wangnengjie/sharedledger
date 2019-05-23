@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text, Image, Button } from "@tarojs/components";
+import { View, Text } from "@tarojs/components";
 import Payment from "../../Components/Payment/Payment";
 import { countMoney, checkOutPayment } from "../../utils/checkOut";
 import { myRequest } from "../../utils/myRequest";
@@ -9,12 +9,9 @@ class checkOut extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ledgerId: 0,
       ledgerName: "",
       users: [],
-      bills: [],
-      done: true,
-      categories: []
+      bills: []
     };
   }
 
