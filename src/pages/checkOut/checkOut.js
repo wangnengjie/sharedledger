@@ -3,6 +3,7 @@ import { View, Text, Image, Button } from "@tarojs/components";
 import Payment from "../../Components/Payment/Payment";
 import { countMoney, checkOutPayment } from "../../utils/checkOut";
 import { myRequest } from "../../utils/myRequest";
+import "./checkOut.scss";
 
 class checkOut extends Component {
   constructor(props) {
@@ -32,9 +33,14 @@ class checkOut extends Component {
     return (
       <View>
         <View className='check-out-title'>
-          <Text>{ledgerName}  结算结果</Text>
-          <Text>合计金额</Text>
-          
+          <Text className='title-1' space='emsp'>
+            {`${ledgerName} 结算结果`}
+          </Text>
+          <Text className='title-2'>合计金额</Text>
+          <View className='title-3'>
+            <Text>{totalMoney}</Text>
+            <Text className='title-3-yuan'>元</Text>
+          </View>
         </View>
         <View>
           {payments.map((payment, index) => {
