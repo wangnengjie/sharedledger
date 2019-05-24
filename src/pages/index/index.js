@@ -25,6 +25,9 @@ class Index extends Component {
     this.eventsSwitchLedger = this.eventsSwitchLedger.bind(this);
     this.eventsAddOne = this.eventsAddOne.bind(this);
     this.eventsDeleteLedger = this.eventsDeleteLedger.bind(this);
+    this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
+    this.eventsLedgerActive = this.eventsLedgerActive.bind(this);
+    this.eventsLedgerCheckOut = this.eventsLedgerCheckOut.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
@@ -42,7 +45,6 @@ class Index extends Component {
       },
       run: [],
       ledgerId: "",
-      users: [],
       bills: []
     };
   }
@@ -100,6 +102,40 @@ class Index extends Component {
     this.setState({ run });
   }
 
+  eventsDeleteBill(ledgerId, billId) {
+    if (ledgerId === this.state.ledgerId) {
+      const bills = this.state.bills;
+      const index = bills.findIndex(bill => billId === bill.billId);
+      if (index < 0) return;
+      bills.splice(index, 1);
+      this.setState({ bills });
+    }
+  }
+
+  async eventsLedgerActive(ledgerId) {
+    const run = this.state.run.concat();
+    const index = run.findIndex(e => e.ledgerId === ledgerId);
+    if (index < 0) {
+      const data = await myRequest("/ledger", "GET", { ledgerId });
+      if (data) {
+        run.unshift({
+          ledgerId,
+          ledgerName: data.ledger.ledgerName,
+          done: false
+        });
+        this.setState({ run });
+        this.eventsSwitchLedger(data.ledger);
+      }
+    }
+  }
+
+  eventsLedgerCheckOut(ledgerId) {
+    const run = this.state.run.concat();
+    run.splice(run.findIndex(e => e.ledgerId === ledgerId), 1);
+    this.setState({ run });
+    this.handleSwitchLedger(run[0].ledgerId);
+  }
+
   handleSlide() {
     this.setState(prevState => ({ slide: !prevState.slide }));
   }
@@ -123,18 +159,24 @@ class Index extends Component {
         this.handleCloseCurtain();
         break;
       case 2:
-        // 结算
+        const _ledgerId = this.state.curtain.extraMsg;
+        const _data = await myRequest("/ledger", "PUT", {
+          done: true,
+          ledgerId: _ledgerId
+        });
+        if (_data) {
+          events.trigger("ledgerCheckOut", _ledgerId);
+          Taro.navigateTo({
+            url: `/pages/checkOut/checkOut?ledgerId=${_ledgerId}`
+          });
+        }
+        this.handleCloseCurtain();
         break;
       case 3:
         const [billId, ledgerId] = this.state.curtain.extraMsg;
         const data = await myRequest("/bill", "DELETE", { billId, ledgerId });
         if (data) {
-          events.trigger("deleteBill", this.state.ledgerId, billId);
-          const bills = this.state.bills;
-          const index = bills.findIndex(bill => billId === bill.billId);
-          if (index < 0) return;
-          bills.splice(index, 1);
-          this.setState({ bills });
+          events.trigger("deleteBill", ledgerId, billId);
         }
         this.handleCloseCurtain();
         break;
@@ -172,6 +214,18 @@ class Index extends Component {
         msg: "确认要删除该笔账单吗",
         type: 3,
         extraMsg: [billId, ledgerId]
+      }
+    });
+  }
+
+  handleCheckOut() {
+    const ledgerId = this.state.ledgerId;
+    this.setState({
+      curtain: {
+        isOpened: true,
+        msg: "确定要结算账本吗",
+        type: 2,
+        extraMsg: ledgerId
       }
     });
   }
@@ -214,6 +268,9 @@ class Index extends Component {
     events.on("switchLedger", this.eventsSwitchLedger);
     events.on("addOne", this.eventsAddOne);
     events.on("deleteLedger", this.eventsDeleteLedger);
+    events.on("deleteBill", this.eventsDeleteBill);
+    events.on("ledgerActive", this.eventsLedgerActive);
+    events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
     //用户登录
     await myLogin();
     //获取用户授权信息
@@ -259,6 +316,9 @@ class Index extends Component {
     events.off("switchLedger", this.eventsSwitchLedger);
     events.off("addOne", this.eventsAddOne);
     events.off("deleteLedger", this.eventsDeleteLedger);
+    events.off("deleteBill", this.eventsDeleteBill);
+    events.off("ledgerActive", this.eventsLedgerActive);
+    events.off("ledgerCheckOut", this.eventsLedgerCheckOut);
   }
 
   componentDidShow() {
@@ -269,19 +329,12 @@ class Index extends Component {
 
   render() {
     //取参
-    const { ledgerId, users, bills, run, curtain } = this.state;
-    //创建userInfo键值对
-    let userIn = {};
-    users.forEach(e => {
-      userIn[e.uid] = e;
-    });
+    const { ledgerId, bills, run, curtain } = this.state;
     //处理账本
     // console.log(run);
     const _run = run.concat();
-    let i = _run.findIndex(e => e.ledgerId === ledgerId);
-    _run.unshift(_run[i]);
-    _run.splice(i + 1, 1);
-
+    const i = _run.findIndex(e => e.ledgerId === ledgerId);
+    _run.unshift(..._run.splice(i, 1));
     return (
       <View>
         {/* 幕帘 */}
@@ -367,7 +420,6 @@ class Index extends Component {
               {bills.map((e, index) => (
                 <BillCard
                   billInfo={e}
-                  members={userIn}
                   key={e.billId}
                   index={index}
                   onDelete={this.handleDeleteBill.bind(
@@ -379,7 +431,7 @@ class Index extends Component {
               ))}
             </View>
             {/*结算按钮*/}
-            <View className='check-out'>
+            <View className='check-out' onClick={this.handleCheckOut}>
               <Text>结账</Text>
             </View>
           </View>

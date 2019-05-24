@@ -4,7 +4,7 @@ import "./Curtain.scss";
 
 class Curtain extends Component {
   render() {
-    const { msg, onSure, onClose,onGetUserInfo } = this.props;
+    const { msg, onSure, onClose, onGetUserInfo } = this.props;
     return (
       <View className='curtain-bar'>
         <View className='curtain-main'>
@@ -37,9 +37,9 @@ class Curtain extends Component {
 
 Curtain.defaultProps = {
   msg: "",
-  onGetUserInfo: null,
-  onSure: null,
-  onClose: null
+  onGetUserInfo() {},
+  onSure() {},
+  onClose() {}
 };
 
 export default Curtain;

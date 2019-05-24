@@ -11,7 +11,7 @@ class BillCard extends Component {
   }
 
   handleFix() {
-    const { billInfo, index } = this.props;
+    // const { billInfo } = this.props;
     //跳转传参，JSON.Stringify(billInfo)，pagepath，index
   }
 
@@ -113,7 +113,7 @@ BillCard.defaultProps = {
     description: ""
   },
   done: false,
-  onDelete() {}
+  onDelete() { }
 };
 
 export default BillCard;

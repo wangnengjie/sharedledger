@@ -52,6 +52,34 @@ events.on("deleteLedger", (ledgerId, isDone) => {
   isDone ? (globalData.done = array) : (globalData.run = array);
 });
 
+events.on("ledgerActive", ledgerId => {
+  const run = globalData.run.concat();
+  const done = globalData.done.concat();
+  const index = done.findIndex(obj => {
+    return obj.ledgerId === ledgerId;
+  });
+  if (index < 0) return;
+  const ledger = done.splice(index, 1);
+  ledger[0].done = false;
+  run.unshift(...ledger);
+  globalData.run = run;
+  globalData.done = done;
+});
+
+events.on("ledgerCheckOut", ledgerId => {
+  const run = globalData.run.concat();
+  const done = globalData.done.concat();
+  const index = run.findIndex(obj => {
+    return obj.ledgerId === ledgerId;
+  });
+  if (index < 0) return;
+  const ledger = run.splice(index, 1);
+  ledger[0].done = true;
+  done.unshift(...ledger);
+  globalData.run = run;
+  globalData.done = done;
+});
+
 // events.on("fix", this.handleFix);
 
 export default events;
