@@ -26,10 +26,14 @@ class graph extends Component {
   render() {
     const { bills, users } = this.state;
     const totalMoney = countMoney(bills);
-    const date = graphAnalyze.persentOfDate(bills, totalMoney);
+    const date = graphAnalyze.percentOfDate(bills, totalMoney);
+    const category = graphAnalyze.percentOfCategory(bills, totalMoney);
+    const pay = graphAnalyze.percentOfPerson(bills, users, totalMoney);
     return (
       <View>
         <Graphs type='date' details={date} />
+        <Graphs type='category' details={category} />
+        <Graphs type='pay' details={pay} />
       </View>
     );
   }

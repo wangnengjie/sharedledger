@@ -1,10 +1,10 @@
-const persentOfCategory = (bills, total) => {
+const percentOfCategory = (bills, total) => {
   if (!bills.length) return [];
   const map = new Map();
   bills.forEach(bill => {
     let category = bill.category;
     category.categoryId === 0
-      ? (category = "其他")
+      ? (category = "其它")
       : (category = category.categoryName);
     let money = bill.money / 100;
     if (map.has(category)) {
@@ -24,7 +24,7 @@ const persentOfCategory = (bills, total) => {
   return details;
 };
 
-const persentOfDate = (bills, total) => {
+const percentOfDate = (bills, total) => {
   if (!bills.length) return [];
   const map = new Map();
   bills.forEach(bill => {
@@ -48,7 +48,7 @@ const persentOfDate = (bills, total) => {
   return details;
 };
 
-const persentOfPerson = (bills, userList, total) => {
+const percentOfPerson = (bills, userList, total) => {
   if (!bills.length) return [];
   const uInfo = userList.map(person => {
     return Object.assign({}, person, { money: 0 });
@@ -57,7 +57,7 @@ const persentOfPerson = (bills, userList, total) => {
     const { money, users } = bill;
     const average = money / users.length;
     users.forEach(user => {
-      uInfo.find(person => person.uid === user).money += average;
+      uInfo.find(person => person.uid === user.uid).money += average;
     });
   });
   uInfo.forEach(person => {
@@ -66,10 +66,10 @@ const persentOfPerson = (bills, userList, total) => {
   uInfo.sort((a, b) => b.money - a.money);
   const fir = uInfo[0].money;
   uInfo.forEach(person => {
-    uInfo.persent = Math.round((person.money / fir) * 100);
-    uInfo.persentForAll = Math.round((person.money / total) * 100);
+    person.percent = Math.round((person.money / fir) * 100);
+    person.percentForAll = Math.round((person.money / total) * 100);
   });
   return uInfo;
 };
 
-export { persentOfCategory, persentOfDate, persentOfPerson };
+export { percentOfCategory, percentOfDate, percentOfPerson };

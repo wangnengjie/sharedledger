@@ -1,6 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image, Progress } from "@tarojs/components";
 import date from "../../images/date.png";
+import category from "../../images/category.png";
 import "./Graphs.scss";
 
 class Graph extends Component {
@@ -25,7 +26,7 @@ class Graph extends Component {
                   </View>
                   <View className='graph-progress'>
                     <Progress
-                      percent={detail[2]}
+                      percent={detail[3]}
                       border-radius='4.5rpx'
                       stroke-width='9rpx'
                       backgroundColor='#F7F2FF'
@@ -47,7 +48,7 @@ class Graph extends Component {
             return (
               <View key={index} className='graph-card'>
                 <View className='graph-card-icon'>
-                  <Image src={date} />
+                  <Image src={category} />
                   <Text style='color:#FFB63B'>{detail[0]}</Text>
                 </View>
                 <View className='graph-card-detail'>
@@ -57,7 +58,7 @@ class Graph extends Component {
                   </View>
                   <View className='graph-progress'>
                     <Progress
-                      percent={detail[2]}
+                      percent={detail[3]}
                       border-radius='4.5rpx'
                       stroke-width='9rpx'
                       backgroundColor='#FFF9F0'
@@ -84,16 +85,18 @@ class Graph extends Component {
                 </View>
                 <View className='graph-card-detail'>
                   <View className='detail-text'>
-                    <Text className='detail-left'>{`${detail.persentForAll}%`}</Text>
+                    <Text className='detail-left'>{`${
+                      detail.percentForAll
+                    }%`}</Text>
                     <Text className='detail-right'>{`${detail.money}元`}</Text>
                   </View>
                   <View className='graph-progress'>
                     <Progress
-                      percent={detail.percent}
+                      percent={detail.percentForAll}
                       border-radius='4.5rpx'
                       stroke-width='9rpx'
-                      backgroundColor='#FFF9F0'
-                      activeColor='#FFC86C'
+                      backgroundColor='#F1F5FE'
+                      activeColor='#799CFA'
                       active
                     />
                   </View>
