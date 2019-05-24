@@ -1,4 +1,4 @@
-const persentOfCategory = bills => {
+const persentOfCategory = (bills, total) => {
   if (!bills.length) return [];
   const map = new Map();
   bills.forEach(bill => {
@@ -17,13 +17,14 @@ const persentOfCategory = bills => {
   details.sort((a, b) => b[1] - a[1]);
   const fir = details[0][1];
   details.forEach(detail => {
-    detail.push(Math.round((detail[1] / fir)*100));
-    detail[1] = Number.parseFloat((detail[1]).toFixed(2));
+    detail.push(Math.round((detail[1] / fir) * 100));
+    detail.push(Math.round((detail[1] / total) * 100));
+    detail[1] = Number.parseFloat(detail[1].toFixed(2));
   });
   return details;
 };
 
-const persentOfDate = bills => {
+const persentOfDate = (bills, total) => {
   if (!bills.length) return [];
   const map = new Map();
   bills.forEach(bill => {
@@ -40,13 +41,14 @@ const persentOfDate = bills => {
   details.sort((a, b) => b[1] - a[1]);
   const fir = details[0][1];
   details.forEach(detail => {
-    detail.push(Math.round((detail[1] / fir)*100));
-    detail[1] = Number.parseFloat((detail[1]).toFixed(2));
+    detail.push(Math.round((detail[1] / fir) * 100));
+    detail.push(Math.round((detail[1] / total) * 100));
+    detail[1] = Number.parseFloat(detail[1].toFixed(2));
   });
   return details;
 };
 
-const persentOfPerson = (bills, userList) => {
+const persentOfPerson = (bills, userList, total) => {
   if (!bills.length) return [];
   const uInfo = userList.map(person => {
     return Object.assign({}, person, { money: 0 });
@@ -64,7 +66,8 @@ const persentOfPerson = (bills, userList) => {
   uInfo.sort((a, b) => b.money - a.money);
   const fir = uInfo[0].money;
   uInfo.forEach(person => {
-    uInfo.persent = Math.round((person.money / fir)*100);
+    uInfo.persent = Math.round((person.money / fir) * 100);
+    uInfo.persentForAll = Math.round((person.money / total) * 100);
   });
   return uInfo;
 };

@@ -2,6 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import { tempLedgerData } from "../../utils/events";
 import * as graphAnalyze from "../../utils/graph";
+import { countMoney } from "../../utils/checkOut";
 import Graphs from "../../Components/Graphs/Graphs";
 
 class graph extends Component {
@@ -10,12 +11,12 @@ class graph extends Component {
   };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      users:[],
-      bills:[],
-      categories:[]
-    }
+      users: [],
+      bills: [],
+      categories: []
+    };
   }
 
   componentWillMount() {
@@ -24,8 +25,8 @@ class graph extends Component {
 
   render() {
     const { bills, users } = this.state;
-    console.log(this.state);
-    const date = graphAnalyze.persentOfDate(bills);
+    const totalMoney = countMoney(bills);
+    const date = graphAnalyze.persentOfDate(bills, totalMoney);
     return (
       <View>
         <Graphs type='date' details={date} />

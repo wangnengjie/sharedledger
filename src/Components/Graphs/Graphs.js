@@ -20,7 +20,7 @@ class Graph extends Component {
                 </View>
                 <View className='graph-card-detail'>
                   <View className='detail-text'>
-                    <Text className='detail-left'>{`${detail[2]}%`}</Text>
+                    <Text className='detail-left'>{`${detail[3]}%`}</Text>
                     <Text className='detail-right'>{`${detail[1]}元`}</Text>
                   </View>
                   <View className='graph-progress'>
@@ -52,7 +52,7 @@ class Graph extends Component {
                 </View>
                 <View className='graph-card-detail'>
                   <View className='detail-text'>
-                    <Text className='detail-left'>{`${detail[2]}%`}</Text>
+                    <Text className='detail-left'>{`${detail[3]}%`}</Text>
                     <Text className='detail-right'>{`${detail[1]}元`}</Text>
                   </View>
                   <View className='graph-progress'>
@@ -84,7 +84,7 @@ class Graph extends Component {
                 </View>
                 <View className='graph-card-detail'>
                   <View className='detail-text'>
-                    <Text className='detail-left'>{`${detail.persent}%`}</Text>
+                    <Text className='detail-left'>{`${detail.persentForAll}%`}</Text>
                     <Text className='detail-right'>{`${detail.money}元`}</Text>
                   </View>
                   <View className='graph-progress'>
