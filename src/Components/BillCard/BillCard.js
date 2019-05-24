@@ -112,7 +112,8 @@ BillCard.defaultProps = {
     category: {},
     description: ""
   },
-  done: false
+  done: false,
+  onDelete() {}
 };
 
 export default BillCard;

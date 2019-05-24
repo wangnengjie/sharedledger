@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Button } from "@tarojs/components";
-import events, { globalData } from "../../utils/events";
+import events, { globalData, tempLedgerData } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
 import "./my.scss";
 import LedgerCard from "../../Components/LedgerCard/LedgerCard";
@@ -62,8 +62,10 @@ class My extends Component {
     this.setState({ run });
   }
 
-  handleDetail(ledgerId) {
-    console.log("aaa");
+  async handleDetail(ledgerId) {
+    Taro.navigateTo({
+      url: `/pages/ledgerDetail/ledgerDetail?ledgerId=${ledgerId}`
+    });
   }
 
   handleCheck(ledgerId) {
