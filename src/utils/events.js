@@ -4,6 +4,7 @@ const events = new Events();
 const globalData = {};
 const tempBillData = {};
 const tempLedgerData = {};
+const tempUserList = {};
 
 events.on("getIndex", obj => {
   const { done, run, ledger } = JSON.parse(JSON.stringify(obj));
@@ -119,4 +120,4 @@ events.on("addCategory", (body, ledgerId) => {
 // events.on("fix", this.handleFix);
 
 export default events;
-export { globalData, tempBillData, tempLedgerData };
+export { globalData, tempBillData, tempLedgerData, tempUserList };

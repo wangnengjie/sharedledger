@@ -3,7 +3,11 @@ import { View, Input, Text, Textarea, Image } from "@tarojs/components";
 import UserBox from "../../Components/UserBox/UserBox";
 import ExtendBtn from "../../Components/ExtendBtn/ExtendBtn";
 import UseBox from "../../Components/UseBox/UseBox";
-import events, { globalData, tempLedgerData } from "../../utils/events";
+import events, {
+  globalData,
+  tempLedgerData,
+  tempUserList
+} from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
 import "./bill.scss";
 import setting from "../../images/setting.png";
@@ -23,6 +27,7 @@ class Bill extends Component {
     this.handlePayerSwitch = this.handlePayerSwitch.bind(this);
     this.handleSwitchCategory = this.handleSwitchCategory.bind(this);
     this.handleSetting = this.handleSetting.bind(this);
+    this.eventsSwitchPayer = this.eventsSwitchPayer.bind(this);
     this.state = {
       temp: false,
       tempName: "",
@@ -141,7 +146,7 @@ class Bill extends Component {
   }
 
   handlePayerSwitch(index) {
-    const users = this.state.users;
+    const users = this.state.users.concat();
     for (let i = 0; i < users.length; i++) {
       users[i].isPayer = false;
     }
@@ -239,9 +244,23 @@ class Bill extends Component {
     this.setState({ extendUsers: !state });
   }
 
+  navigateToUserList() {
+    Object.assign(tempUserList, { users: this.state.users });
+    Taro.navigateTo({ url: "/pages/userList/userList" });
+  }
+
+  eventsSwitchPayer(users) {
+    this.setState({ users });
+  }
+
   componentWillMount() {
+    events.on("switchPayer", this.eventsSwitchPayer);
     const { page, ledgerId } = this.$router.params;
     this.initialize(page, ledgerId);
+  }
+
+  componentWillUnmount() {
+    events.off("switchPayer", this.eventsSwitchPayer);
   }
 
   render() {
@@ -298,7 +317,13 @@ class Bill extends Component {
                 />
               );
             })}
-            {users.length > 3 && <ExtendBtn theme='payer' extended={false} />}
+            {users.length > 0 && (
+              <ExtendBtn
+                theme='payer'
+                extended={false}
+                onClick={this.navigateToUserList}
+              />
+            )}
           </View>
         </View>
 
