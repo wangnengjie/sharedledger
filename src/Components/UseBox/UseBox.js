@@ -10,8 +10,10 @@ class UseBox extends Component {
       category.selected ? "UseBox-selected" : "UseBox-unselected"
     }`;
     return (
-      <View className={className} onClick={() => onClick(index)}>
-        <Text>{category.categoryName}</Text>
+      <View className='category-main'>
+        <View className={className} onClick={() => onClick(index)}>
+          <Text>{category.categoryName}</Text>
+        </View>
         {index > 4 && setting && (
           <View onClick={onDelete} className='delete-btn'>
             <Image src={x} />

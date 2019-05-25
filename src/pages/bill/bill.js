@@ -145,18 +145,17 @@ class Bill extends Component {
     return input[0];
   }
 
-  handlePayerSwitch(index) {
+  handlePayerSwitch(uid) {
     const users = this.state.users.concat();
-    for (let i = 0; i < users.length; i++) {
-      users[i].isPayer = false;
-    }
-    users[index].isPayer = true;
+    users.find(user => user.isPayer).isPayer = false;
+    users.find(user => user.uid === uid).isPayer = true;
     this.setState({ users });
   }
 
-  handleUserSwitch(index) {
-    const users = this.state.users;
-    users[index].selected = !users[index].selected;
+  handleUserSwitch(uid) {
+    const users = this.state.users.concat();
+    const user = users.find(u => u.uid === uid);
+    user.selected = !user.selected;
     this.setState({ users });
   }
 
@@ -185,7 +184,8 @@ class Bill extends Component {
     }
   }
 
-  async handleDeleteCategory(categoryId, ledgerId) {
+  async handleDeleteCategory(categoryId, ledgerId, e) {
+    e.stopPropagation();
     const data = await myRequest("/category", "DELETE", {
       categoryId,
       ledgerId
@@ -250,6 +250,7 @@ class Bill extends Component {
   }
 
   eventsSwitchPayer(users) {
+    console.log(users);
     this.setState({ users });
   }
 
@@ -305,12 +306,12 @@ class Bill extends Component {
             <Text>付款人</Text>
           </View>
           <View className='bill-payer-box'>
-            {users.slice(0, 3).map((user, index) => {
+            {users.slice(0, 3).map(user => {
               return (
                 <UserBox
-                  key={user.uid}
+                  key={Math.random()}
                   isPayer={user.isPayer}
-                  index={index}
+                  uid={user.uid}
                   nickName={user.nickName}
                   selected={false}
                   onClick={this.handlePayerSwitch}
@@ -332,19 +333,17 @@ class Bill extends Component {
             <Text>参与人</Text>
           </View>
           <View className='bill-users-box'>
-            {users
-              .slice(0, extendUsers ? users.length : 7)
-              .map((user, index) => {
-                return (
-                  <UserBox
-                    key={user.uid}
-                    index={index}
-                    nickName={user.nickName}
-                    selected={user.selected}
-                    onClick={this.handleUserSwitch}
-                  />
-                );
-              })}
+            {users.slice(0, extendUsers ? users.length : 7).map(user => {
+              return (
+                <UserBox
+                  key={user.uid}
+                  uid={user.uid}
+                  nickName={user.nickName}
+                  selected={user.selected}
+                  onClick={this.handleUserSwitch}
+                />
+              );
+            })}
             {users.length > 7 && (
               <ExtendBtn
                 theme='user'

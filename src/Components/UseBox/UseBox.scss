@@ -1,28 +1,29 @@
-.UseBox {
+.category-main {
   position: relative;
-  width: 134px;
-  height: 52px;
-  border-radius: 18px;
-  display: flex;
-  justify-content: center;
-  margin: 10px 15px;
-  Text {
-    line-height: 52px;
-    text-align: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 24px;
+  .UseBox {
+    width: 134px;
+    height: 52px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    margin: 10px 15px;
+    Text {
+      line-height: 52px;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 24px;
+    }
   }
-
   .delete-btn {
     position: absolute;
-    top: 7px;
-    right: 12px;
+    top: 10px;
+    right: 22px;
     width: 16px;
     height: 16px;
-    Image{
+    image {
       position: absolute;
-      top:0;
+      top: 0;
       left: 0;
       width: 100%;
       height: 100%;
