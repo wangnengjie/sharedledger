@@ -248,6 +248,7 @@ class Index extends Component {
       ledgerId: this.state.ledgerId
     });
     events.trigger("switchLedger", data.ledger);
+    Taro.stopPullDownRefresh();
   }
 
   navigateToCreateLedger() {
@@ -258,7 +259,6 @@ class Index extends Component {
   }
 
   async componentWillMount() {
-    const that = this;
     //显示加载中
     Taro.showLoading({ title: "程序初始化中", mask: true });
     //事件挂载
@@ -271,23 +271,11 @@ class Index extends Component {
     events.on("deleteBill", this.eventsDeleteBill);
     events.on("ledgerActive", this.eventsLedgerActive);
     events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
-    //用户登录
-    await myLogin();
-    //获取用户授权信息
+    const storage = Taro.getStorageInfoSync();
     const auth = (await getAuth()) || false;
     globalData.auth = auth;
-    if (auth) {
-      //这一步放异步
-      Taro.getUserInfo().then(res => {
-        const userInfo = res.userInfo;
-        that.setState({ userInfo });
-        globalData.userInfo = userInfo;
-        myRequest("/user", "PUT", {
-          uid: Taro.getStorageSync("uid"),
-          nickName: userInfo.nickName,
-          avatarUrl: userInfo.avatarUrl
-        });
-      });
+    if (!storage.keys.includes("uid") || !storage.keys.includes("sessionId")) {
+      await myLogin(auth);
     }
     //获取首页信息,事件中会关闭加载中图标
     const data = await myRequest("/index", "GET");

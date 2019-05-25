@@ -223,7 +223,7 @@ class Bill extends Component {
           categoryName: text
         };
         categories.push(body);
-        this.setState({ categories });
+        this.setState({ categories, temp: false, tempName: "" });
         events.trigger("addCategory", body, ledgerId);
       }
     }
@@ -320,10 +320,10 @@ class Bill extends Component {
                   />
                 );
               })}
-            {users.length > 7 && extendUsers && (
+            {users.length > 7 && (
               <ExtendBtn
                 theme='user'
-                extended={this.state.extendUsers}
+                extended={extendUsers}
                 onClick={this.extendUsers}
               />
             )}
@@ -362,10 +362,10 @@ class Bill extends Component {
                   />
                 );
               })}
-            {categories.length > 7 && extendCategories && !categorySetting && (
+            {categories.length > 7 && !categorySetting && (
               <ExtendBtn
                 theme='category'
-                extended={this.state.categories}
+                extended={extendCategories}
                 onClick={this.extendCategories}
               />
             )}

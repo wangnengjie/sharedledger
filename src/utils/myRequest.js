@@ -2,7 +2,7 @@ import Taro from "@tarojs/taro";
 
 const route = "https://www.westice.top/weapp";
 
-const myLogin = async () => {
+const myLogin = async auth => {
   const code = await Taro.login().then(res => res.code);
   const { errcode, errMsg, sessionId, uid } = await Taro.request({
     method: "GET",
@@ -25,6 +25,17 @@ const myLogin = async () => {
 
   Taro.setStorageSync("uid", uid);
   Taro.setStorageSync("sessionId", sessionId);
+
+  if (auth) {
+    Taro.getUserInfo().then(res => {
+      const userInfo = res.userInfo;
+      myRequest("/user", "PUT", {
+        uid: Taro.getStorageSync("uid"),
+        nickName: userInfo.nickName,
+        avatarUrl: userInfo.avatarUrl
+      });
+    });
+  }
 };
 
 const myRequest = async (url, method, body = {}) => {
