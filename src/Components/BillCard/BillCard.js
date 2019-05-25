@@ -2,6 +2,7 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import UserBox from "../UserBox/UserBox";
 import UseBox from "../UseBox/UseBox";
+import { tempBillData } from "../../utils/events";
 import "./BillCard.scss";
 
 class BillCard extends Component {
@@ -11,8 +12,15 @@ class BillCard extends Component {
   }
 
   handleFix() {
-    // const { billInfo } = this.props;
-    //跳转传参，JSON.Stringify(billInfo)，pagepath，index
+    Object.assign(
+      tempBillData,
+      JSON.parse(JSON.stringify(this.props.billInfo))
+    );
+    Taro.navigateTo({
+      url: `/pages/modifyBill/modifyBill?page=${this.props.page}&ledgerId=${
+        this.props.ledgerId
+      }`
+    });
   }
 
   render() {
@@ -112,8 +120,10 @@ BillCard.defaultProps = {
     category: {},
     description: ""
   },
+  ledgerId: Number,
+  page: String,
   done: false,
-  onDelete() { }
+  onDelete() {}
 };
 
 export default BillCard;

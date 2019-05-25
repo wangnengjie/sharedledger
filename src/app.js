@@ -20,7 +20,8 @@ class App extends Component {
       "pages/ledgerDetail/ledgerDetail",
       "pages/checkOut/checkOut",
       "pages/graph/graph",
-      "pages/userList/userList"
+      "pages/userList/userList",
+      "pages/modifyBill/modifyBill"
     ],
     window: {
       backgroundColor: "#f2f2f7",

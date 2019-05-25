@@ -28,6 +28,7 @@ class Index extends Component {
     this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
     this.eventsLedgerActive = this.eventsLedgerActive.bind(this);
     this.eventsLedgerCheckOut = this.eventsLedgerCheckOut.bind(this);
+    this.eventsModifyBill = this.eventsModifyBill.bind(this);
     this.handleSlide = this.handleSlide.bind(this);
     this.handleCloseCurtain = this.handleCloseCurtain.bind(this);
     this.handleInvite = this.handleInvite.bind(this);
@@ -44,7 +45,7 @@ class Index extends Component {
         extraMsg: ""
       },
       run: [],
-      ledgerId: "",
+      ledgerId: 0,
       bills: []
     };
   }
@@ -134,6 +135,17 @@ class Index extends Component {
     run.splice(run.findIndex(e => e.ledgerId === ledgerId), 1);
     this.setState({ run });
     this.handleSwitchLedger(run[0].ledgerId);
+  }
+
+  eventsModifyBill(body) {
+    if (body.ledgerId === this.state.ledgerId) {
+      const bills = this.state.bills.concat();
+      Object.assign(
+        bills.find(bill => bill.billId === body.bill.billId),
+        JSON.parse(JSON.stringify(body.bill))
+      );
+      this.setState({ bills });
+    }
   }
 
   handleSlide() {
@@ -271,6 +283,7 @@ class Index extends Component {
     events.on("deleteBill", this.eventsDeleteBill);
     events.on("ledgerActive", this.eventsLedgerActive);
     events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
+    events.on("modifyBill", this.eventsModifyBill);
     const storage = Taro.getStorageInfoSync();
     const auth = (await getAuth()) || false;
     globalData.auth = auth;
@@ -307,6 +320,7 @@ class Index extends Component {
     events.off("deleteBill", this.eventsDeleteBill);
     events.off("ledgerActive", this.eventsLedgerActive);
     events.off("ledgerCheckOut", this.eventsLedgerCheckOut);
+    events.off("modifyBill", this.eventsModifyBill);
   }
 
   componentDidShow() {
@@ -410,6 +424,8 @@ class Index extends Component {
                   billInfo={e}
                   key={e.billId}
                   index={index}
+                  ledgerId={ledgerId}
+                  page='index'
                   onDelete={this.handleDeleteBill.bind(
                     this,
                     e.billId,

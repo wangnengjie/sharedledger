@@ -22,6 +22,7 @@ class ledgerDetail extends Component {
     this.eventsDeleteBill = this.eventsDeleteBill.bind(this);
     this.eventsLedgerActive = this.eventsLedgerActive.bind(this);
     this.eventsLedgerCheckOut = this.eventsLedgerCheckOut.bind(this);
+    this.eventsModifyBill = this.eventsModifyBill.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleOnSure = this.handleOnSure.bind(this);
     this.handleAddOne = this.handleAddOne.bind(this);
@@ -166,6 +167,17 @@ class ledgerDetail extends Component {
     }
   }
 
+  eventsModifyBill(body) {
+    if (body.ledgerId === this.state.ledgerId) {
+      const bills = this.state.bills.concat();
+      Object.assign(
+        bills.find(bill => bill.billId === body.bill.billId),
+        JSON.parse(JSON.stringify(body.bill))
+      );
+      this.setState({ bills });
+    }
+  }
+
   naviToGraph() {
     const { users, categories, ledgerId, ledgerName, bills } = this.state;
     Object.assign(tempLedgerData, {
@@ -185,6 +197,7 @@ class ledgerDetail extends Component {
     events.on("deleteBill", this.eventsDeleteBill);
     events.on("ledgerActive", this.eventsLedgerActive);
     events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
+    events.on("modifyBill", this.eventsModifyBill);
     const ledgerId = this.$router.params.ledgerId;
     const data = await myRequest("/ledger", "GET", { ledgerId });
     if (data) {
@@ -200,6 +213,7 @@ class ledgerDetail extends Component {
     events.off("deleteBill", this.eventsDeleteBill);
     events.off("ledgerActive", this.eventsLedgerActive);
     events.off("ledgerCheckOut", this.eventsLedgerCheckOut);
+    events.off("modifyBill", this.eventsModifyBill);
   }
 
   render() {
@@ -292,6 +306,8 @@ class ledgerDetail extends Component {
                 key={bill.billId}
                 billInfo={bill}
                 done={done}
+                ledgerId={ledgerId}
+                page='ledgerDetail'
                 onDelete={this.handleDelete.bind(this, bill.billId, ledgerId)}
               />
             ))}

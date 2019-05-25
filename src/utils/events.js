@@ -117,6 +117,24 @@ events.on("addCategory", (body, ledgerId) => {
   }
 });
 
+events.on("modifyBill", body => {
+  const { ledgerId, bill } = body;
+  if (ledgerId === globalData.ledger.ledgerId) {
+    Object.assign(
+      globalData.ledger.bills.find(b => b.billId === bill.billId),
+      bill
+    );
+  } else if (
+    Reflect.has(tempLedgerData, "ledgerId") &&
+    tempLedgerData === ledgerId
+  ) {
+    Object.assign(
+      tempLedgerData.bills.find(b => b.billId === bill.billId),
+      JSON.parse(JSON.stringify(bill))
+    );
+  }
+});
+
 // events.on("fix", this.handleFix);
 
 export default events;
