@@ -1,16 +1,22 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Text } from "@tarojs/components";
+import { View, Text, Image } from "@tarojs/components";
+import x from "../../images/x.png";
 import "./UseBox.scss";
 
 class UseBox extends Component {
   render() {
-    const { category, onClick, index } = this.props;
+    const { category, onClick, index, setting, onDelete } = this.props;
     const className = `UseBox ${
       category.selected ? "UseBox-selected" : "UseBox-unselected"
     }`;
     return (
       <View className={className} onClick={() => onClick(index)}>
         <Text>{category.categoryName}</Text>
+        {index > 4 && setting && (
+          <View onClick={onDelete} className='delete-btn'>
+            <Image src={x} />
+          </View>
+        )}
       </View>
     );
   }
@@ -20,10 +26,12 @@ UseBox.defaultProps = {
   category: {
     selected: false,
     categoryName: "",
-    categoryId:0
+    categoryId: 0
   },
   index: 0,
-  onClick() {}
+  setting: false,
+  onClick() {},
+  onDelete() {}
 };
 
 export default UseBox;

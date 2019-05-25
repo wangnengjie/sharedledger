@@ -80,6 +80,42 @@ events.on("ledgerCheckOut", ledgerId => {
   globalData.done = done;
 });
 
+events.on("deleteCategory", (categoryId, ledgerId) => {
+  if (globalData.ledger.ledgerId === ledgerId) {
+    globalData.ledger.categories.splice(
+      globalData.ledger.categories.findIndex(
+        category => category.categoryId === categoryId
+      ),
+      1
+    );
+  } else if (
+    Reflect.has(tempLedgerData, "ledgerId") &&
+    Reflect.has(tempLedgerData, "categories")
+  ) {
+    tempLedgerData.categories.splice(
+      tempLedgerData.categories.findIndex(
+        category => category.categoryId === categoryId
+      ),
+      1
+    );
+  }
+});
+
+events.on("addCategory", (body, ledgerId) => {
+  if (globalData.ledger.ledgerId === ledgerId) {
+    let category = JSON.parse(JSON.stringify(body));
+    delete category["selected"];
+    globalData.ledger.categories.push(category);
+  } else if (
+    Reflect.has(tempLedgerData, "ledgerId") &&
+    Reflect.has(tempLedgerData, "categories")
+  ) {
+    let category = JSON.parse(JSON.stringify(body));
+    delete category["selected"];
+    tempLedgerData.categories.push(category);
+  }
+});
+
 // events.on("fix", this.handleFix);
 
 export default events;

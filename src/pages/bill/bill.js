@@ -1,15 +1,14 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Input, Text, Textarea, Image } from "@tarojs/components";
 import UserBox from "../../Components/UserBox/UserBox";
-import ExtendDots from "../../Components/ExtendDots/ExtendDots";
+import ExtendBtn from "../../Components/ExtendBtn/ExtendBtn";
 import UseBox from "../../Components/UseBox/UseBox";
-import events, {
-  globalData,
-  tempLedgerData
-} from "../../utils/events";
+import events, { globalData, tempLedgerData } from "../../utils/events";
 import { myRequest } from "../../utils/myRequest";
 import "./bill.scss";
 import setting from "../../images/setting.png";
+import settingSelected from "../../images/settingSelected.png";
+import add from "../../images/addCategory.png";
 
 class Bill extends Component {
   config = {
@@ -23,7 +22,10 @@ class Bill extends Component {
     this.handleMoneyInput = this.handleMoneyInput.bind(this);
     this.handlePayerSwitch = this.handlePayerSwitch.bind(this);
     this.handleSwitchCategory = this.handleSwitchCategory.bind(this);
+    this.handleSetting = this.handleSetting.bind(this);
     this.state = {
+      temp: false,
+      tempName: "",
       description: "",
       money: "",
       ledgerId: 0,
@@ -31,7 +33,8 @@ class Bill extends Component {
       categories: [],
       users: [],
       extendUsers: false,
-      extendCategories: false
+      extendCategories: false,
+      categorySetting: false
     };
   }
 
@@ -162,8 +165,68 @@ class Bill extends Component {
     this.setState({ categories });
   }
 
-  goBack() {
-    Taro.navigateBack({});
+  handleSetting() {
+    const categorySetting = this.state.categorySetting;
+    if (categorySetting) {
+      this.setState({
+        categorySetting: !categorySetting,
+        extendCategories: false
+      });
+    } else {
+      this.setState({
+        categorySetting: !categorySetting,
+        extendCategories: true
+      });
+    }
+  }
+
+  async handleDeleteCategory(categoryId, ledgerId) {
+    const data = await myRequest("/category", "DELETE", {
+      categoryId,
+      ledgerId
+    });
+    if (data) {
+      const categories = this.state.categories.concat();
+      categories.splice(
+        categories.findIndex(category => category.categoryId === categoryId),
+        1
+      );
+      this.setState({ categories });
+      events.trigger("deleteCategory", categoryId, ledgerId);
+    }
+  }
+
+  handleAddTemp() {
+    this.setState({ temp: true });
+  }
+
+  handleCategoryInput(e) {
+    const text = e.detail.value;
+    this.setState({ tempName: text });
+  }
+
+  async handleAddCategory() {
+    const text = this.state.tempName;
+    const ledgerId = this.state.ledgerId;
+    if (!text.length) {
+      this.setState({ temp: false, tempName: "" });
+    } else {
+      const data = await myRequest("/category", "POST", {
+        ledgerId,
+        category: { categoryName: text }
+      });
+      if (data) {
+        const categories = this.state.categories.concat();
+        const body = {
+          categoryId: data.categoryId,
+          selected: false,
+          categoryName: text
+        };
+        categories.push(body);
+        this.setState({ categories });
+        events.trigger("addCategory", body, ledgerId);
+      }
+    }
   }
 
   extendCategories() {
@@ -183,11 +246,14 @@ class Bill extends Component {
 
   render() {
     const {
+      temp,
       ledgerName,
+      ledgerId,
       users,
       categories,
       extendCategories,
-      extendUsers
+      extendUsers,
+      categorySetting
     } = this.state;
 
     return (
@@ -232,7 +298,7 @@ class Bill extends Component {
                 />
               );
             })}
-            {users.length > 3 && <ExtendDots />}
+            {users.length > 3 && <ExtendBtn theme='payer' extended={false} />}
           </View>
         </View>
 
@@ -255,7 +321,11 @@ class Bill extends Component {
                 );
               })}
             {users.length > 7 && extendUsers && (
-              <ExtendDots onClick={this.extendUsers} />
+              <ExtendBtn
+                theme='user'
+                extended={this.state.extendUsers}
+                onClick={this.extendUsers}
+              />
             )}
           </View>
         </View>
@@ -263,9 +333,14 @@ class Bill extends Component {
         <View className='session bill-category-bar'>
           <View className='bill-title'>
             <Text>用途（非必选）</Text>
-            <View className='bill-category-setting'>
-              <Image src={setting} />
-              <Text>设置</Text>
+            <View
+              className='bill-category-setting'
+              onClick={this.handleSetting}
+            >
+              <Image src={categorySetting ? settingSelected : setting} />
+              <Text className={categorySetting ? "text-setting-true" : ""}>
+                设置
+              </Text>
             </View>
           </View>
           <View className='bill-category-box'>
@@ -278,11 +353,39 @@ class Bill extends Component {
                     category={category}
                     index={index}
                     onClick={this.handleSwitchCategory}
+                    setting={categorySetting}
+                    onDelete={this.handleDeleteCategory.bind(
+                      this,
+                      category.categoryId,
+                      ledgerId
+                    )}
                   />
                 );
               })}
-            {categories.length > 7 && extendCategories && (
-              <ExtendDots onClick={this.extendCategories} />
+            {categories.length > 7 && extendCategories && !categorySetting && (
+              <ExtendBtn
+                theme='category'
+                extended={this.state.categories}
+                onClick={this.extendCategories}
+              />
+            )}
+            {temp && (
+              <View className='temp-category-btn'>
+                <Input
+                  maxlength='4'
+                  focus
+                  onInput={this.handleCategoryInput.bind(this)}
+                  onBlur={this.handleAddCategory.bind(this)}
+                />
+              </View>
+            )}
+            {categorySetting && (
+              <View
+                className='bill-category-add-btn'
+                onClick={this.handleAddTemp.bind(this)}
+              >
+                <Image src={add} />
+              </View>
             )}
           </View>
         </View>
@@ -300,7 +403,10 @@ class Bill extends Component {
           <View className='bill-btn-sure' onClick={this.handleAddOne}>
             <Text>完成</Text>
           </View>
-          <View className='bill-btn-cancel' onClick={this.goBack}>
+          <View
+            className='bill-btn-cancel'
+            onClick={() => Taro.navigateBack({})}
+          >
             <Text>取消</Text>
           </View>
         </View>

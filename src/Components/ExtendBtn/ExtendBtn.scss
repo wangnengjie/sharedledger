@@ -1,0 +1,33 @@
+.extend-btn {
+  width: 134px;
+  margin: 10px 15px;
+  height: 52px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  Text {
+    font-size: 24px;
+    font-weight: 400;
+  }
+}
+.payer{
+  border:1px solid rgba(255, 172, 141, 1);
+  Text{
+    color:rgba(249,152,115,1);
+  }
+}
+
+.user{
+  border:1px solid rgba(148, 157, 251, 1);
+  Text{
+    color:rgba(96,121,193,1);
+  }
+}
+
+.category{
+  border:1px solid #FFD09C;
+  Text{
+    color:rgba(255,181,99,1);
+  }
+}
