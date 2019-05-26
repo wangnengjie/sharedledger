@@ -297,22 +297,25 @@ class Index extends Component {
       });
     }
     //获取首页信息,事件中会关闭加载中图标
-    const data = await myRequest("/index", "GET");
+    let data = await myRequest("/index", "GET");
     if (data) {
       events.trigger("getIndex", data);
     }
     //处理邀请逻辑
-    const { invitationKey, ledgerName } = this.$router.params;
-    if (invitationKey) {
-      this.setState({
-        invitationKey,
-        curtain: {
-          isOpened: true,
-          msg: `确认加入账本 ${ledgerName} 吗`,
-          type: 1,
-          extraMsg: ""
-        }
-      });
+    const { invitationKey, ledgerName, uid } = this.$router.params;
+    if (invitationKey && Number.parseInt(uid) !== Taro.getStorageSync("uid")) {
+      data = await myRequest("/participationCheck", "GET", { invitationKey });
+      if (data && !data.inLedger) {
+        this.setState({
+          invitationKey,
+          curtain: {
+            isOpened: true,
+            msg: `确认加入账本 ${ledgerName} 吗`,
+            type: 1,
+            extraMsg: ""
+          }
+        });
+      }
     }
   }
 

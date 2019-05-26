@@ -1,6 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
 import x from "../../images/x.png";
+import xselected from "../../images/xselected.png";
 import "./UseBox.scss";
 
 class UseBox extends Component {
@@ -16,7 +17,7 @@ class UseBox extends Component {
         </View>
         {index > 4 && setting && (
           <View onClick={onDelete} className='delete-btn'>
-            <Image src={x} />
+            <Image src={category.selected ? xselected : x} />
           </View>
         )}
       </View>

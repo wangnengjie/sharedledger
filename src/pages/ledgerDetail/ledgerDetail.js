@@ -8,7 +8,7 @@ import User from "../../Components/User/User";
 import Curtain from "../../Components/Curtain/Curtain";
 import Payment from "../../Components/Payment/Payment";
 import "./ledgerDetail.scss";
-
+import inviteIcon from "../../images/inviteIcon.png";
 import inviteButton from "../../images/inviteButton.png";
 
 class ledgerDetail extends Component {
@@ -124,18 +124,15 @@ class ledgerDetail extends Component {
     }
   }
 
-  async onShareAppMessage() {
-    const { ledgerId, ledgerName } = this.state;
-    const data = await myRequest("/invitation", "POST", { ledgerId });
-    if (data) {
-      return {
-        title: `${globalData.userInfo.nickName}邀请您加入账本 ${ledgerName}`,
-        path: `/pages/index/index?invitationKey=${
-          data.invitationKey
-        }&ledgerName=${ledgerName}`,
-        imageUrl: "/images/invite.png"
-      };
-    }
+  onShareAppMessage() {
+    const { ledgerName, invitationKey } = this.state;
+    return {
+      title: `${globalData.userInfo.nickName}邀请您加入账本 ${ledgerName}`,
+      path: `/pages/index/index?invitationKey=${invitationKey}&ledgerName=${ledgerName}&uid=${Taro.getStorageSync(
+        "uid"
+      )}`,
+      imageUrl: inviteIcon
+    };
   }
 
   eventsAddOne(detail) {
@@ -200,12 +197,17 @@ class ledgerDetail extends Component {
     events.on("ledgerCheckOut", this.eventsLedgerCheckOut);
     events.on("modifyBill", this.eventsModifyBill);
     const ledgerId = this.$router.params.ledgerId;
-    const data = await myRequest("/ledger", "GET", { ledgerId });
+    let data = await myRequest("/ledger", "GET", { ledgerId });
+    const ledgerName = data.ledger.ledgerName;
     if (data) {
       this.setState({
         ...data.ledger
       });
-      Taro.setNavigationBarTitle({ title: data.ledger.ledgerName });
+      Taro.setNavigationBarTitle({ title: ledgerName });
+    }
+    data = await myRequest("/invitation", "POST", { ledgerId });
+    if (data) {
+      this.setState({ invitationKey: data.invitationKey });
     }
   }
 
@@ -317,7 +319,10 @@ class ledgerDetail extends Component {
 
         <View className='detail-btn-bar'>
           {!done && (
-            <View className='detail-btn-checkout' onClick={this.handleCheck.bind(this,ledgerId)}>
+            <View
+              className='detail-btn-checkout'
+              onClick={this.handleCheck.bind(this, ledgerId)}
+            >
               <Text>结账</Text>
             </View>
           )}
