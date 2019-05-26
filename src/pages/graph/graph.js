@@ -54,7 +54,7 @@ class graph extends Component {
             <Text className='title-3-yuan'>元</Text>
           </View>
           <View className='switch-bar'>
-            {["时间", "用途", "付款"].map((p, index) => {
+            {["时间", "用途", "付款人"].map((p, index) => {
               return (
                 <View
                   className={page === index ? "switch-btn-selected" : ""}
