@@ -7,6 +7,7 @@ import BillCard from "../../Components/BillCard/BillCard";
 import User from "../../Components/User/User";
 import Curtain from "../../Components/Curtain/Curtain";
 import Payment from "../../Components/Payment/Payment";
+import invite from "../../images/invite.png";
 import "./ledgerDetail.scss";
 
 import inviteButton from "../../images/inviteButton.png";
@@ -132,7 +133,8 @@ class ledgerDetail extends Component {
         title: `${globalData.userInfo.nickName}邀请您加入账本 ${ledgerName}`,
         path: `/pages/index/index?invitationKey=${
           data.invitationKey
-        }&ledgerName=${ledgerName}`
+        }&ledgerName=${ledgerName}`,
+        imageUrl: invite
       };
     }
   }

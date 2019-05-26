@@ -320,7 +320,7 @@ class modifyBill extends Component {
                 />
               );
             })}
-            {users.length > 0 && (
+            {users.length > 3 && (
               <ExtendBtn
                 theme='payer'
                 extended={false}

@@ -7,7 +7,7 @@ import invite from "../../images/invite.png";
 
 class inviteFriend extends Component {
   config = {
-    navigationBarTitleText: "邀请驴友"
+    navigationBarTitleText: "邀请好友"
   };
 
   constructor(props) {
@@ -29,7 +29,8 @@ class inviteFriend extends Component {
     const { invitationKey, ledgerName } = this.state;
     return {
       title: `${globalData.userInfo.nickName}邀请您加入账本 ${ledgerName}`,
-      path: `/pages/index/index?invitationKey=${invitationKey}&ledgerName=${ledgerName}`
+      path: `/pages/index/index?invitationKey=${invitationKey}&ledgerName=${ledgerName}`,
+      imageUrl: invite
     };
   }
 
