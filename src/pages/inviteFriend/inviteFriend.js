@@ -30,7 +30,7 @@ class inviteFriend extends Component {
     return {
       title: `${globalData.userInfo.nickName}邀请您加入账本 ${ledgerName}`,
       path: `/pages/index/index?invitationKey=${invitationKey}&ledgerName=${ledgerName}`,
-      imageUrl: invite
+      imageUrl: "/images/invite.png"
     };
   }
 

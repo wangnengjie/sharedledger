@@ -1,11 +1,21 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
+import events from "../../utils/events";
+import { myRequest } from "../../utils/myRequest";
 import "./LedgerCard.scss";
 
 class LedgerCard extends Component {
+  async handleActivate() {
+    const ledgerId = this.props.ledger.ledgerId;
+    const data = await myRequest("/ledger", "PUT", { done: false, ledgerId });
+    if (data) {
+      events.trigger("ledgerActive", ledgerId);
+    }
+  }
+
   render() {
     const { onCheck, onDelete, onDetail } = this.props;
-    const { done, ledgerName} = this.props.ledger;
+    const { done, ledgerName } = this.props.ledger;
     return (
       <View className='ledger-card'>
         <View
@@ -18,27 +28,24 @@ class LedgerCard extends Component {
           </View>
         </View>
 
-        <View
-          className='ledger-name-bar'
-          onClick={onDetail}
-        >
+        <View className='ledger-name-bar' onClick={onDetail}>
           <Text>{ledgerName}</Text>
         </View>
 
         <View className='ledger-btn'>
           {!done && (
-            <View
-              className='ledger-btn-check'
-              onClick={onCheck}
-            >
+            <View className='ledger-btn-check' onClick={onCheck}>
               <Text>结账</Text>
             </View>
           )}
 
-          <View
-            className='ledger-btn-delete'
-            onClick={onDelete}
-          >
+          {done && (
+            <View className='ledger-btn-check' onClick={this.handleActivate}>
+              <Text>激活</Text>
+            </View>
+          )}
+
+          <View className='ledger-btn-delete' onClick={onDelete}>
             <Text>删除</Text>
           </View>
         </View>

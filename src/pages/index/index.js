@@ -290,6 +290,12 @@ class Index extends Component {
     if (!storage.keys.includes("uid") || !storage.keys.includes("sessionId")) {
       await myLogin(auth);
     }
+    if (auth) {
+      Taro.getUserInfo().then(res => {
+        const userInfo = res.userInfo;
+        globalData.userInfo = userInfo;
+      });
+    }
     //获取首页信息,事件中会关闭加载中图标
     const data = await myRequest("/index", "GET");
     if (data) {
