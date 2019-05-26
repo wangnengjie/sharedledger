@@ -317,7 +317,7 @@ class ledgerDetail extends Component {
 
         <View className='detail-btn-bar'>
           {!done && (
-            <View className='detail-btn-checkout'>
+            <View className='detail-btn-checkout' onClick={this.handleCheck.bind(this,ledgerId)}>
               <Text>结账</Text>
             </View>
           )}

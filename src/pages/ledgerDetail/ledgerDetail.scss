@@ -116,7 +116,7 @@
         background-color: transparent;
         padding: unset;
         margin: unset;
-        border: none;
+        border: unset;
         outline: none;
         image {
           width: 100px;
@@ -153,15 +153,15 @@
       font-weight: 400;
     }
   }
-  .detail-btn-checkout{
+  .detail-btn-checkout {
     background-color: #5b78f9;
-    Text{
+    Text {
       color: white;
     }
   }
-  .detail-btn-return{
+  .detail-btn-return {
     background-color: white;
-    Text{
+    Text {
       color: #5b78f9;
     }
   }
