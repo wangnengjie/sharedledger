@@ -198,8 +198,10 @@ class ledgerDetail extends Component {
     events.on("modifyBill", this.eventsModifyBill);
     const ledgerId = this.$router.params.ledgerId;
     let data = await myRequest("/ledger", "GET", { ledgerId });
-    const ledgerName = data.ledger.ledgerName;
     if (data) {
+      Object.assign(tempLedgerData, data.ledger);
+      const ledgerName = data.ledger.ledgerName;
+
       this.setState({
         ...data.ledger
       });

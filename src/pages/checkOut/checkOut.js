@@ -51,6 +51,9 @@ class checkOut extends Component {
             );
           })}
         </View>
+        <View className='return-btn' onClick={() => Taro.navigateBack({})}>
+          <Text>返回</Text>
+        </View>
       </View>
     );
   }

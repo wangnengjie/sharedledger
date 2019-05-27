@@ -31,3 +31,19 @@
     }
   }
 }
+.return-btn {
+  width: 690px;
+  height: 84px;
+  border-radius: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 50px auto;
+  background-color: white;
+  Text {
+    font-size: 36px;
+    font-weight: 400;
+    color: #5b78f9;
+  }
+}

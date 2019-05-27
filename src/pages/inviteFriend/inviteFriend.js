@@ -43,10 +43,19 @@ class inviteFriend extends Component {
           <Text className='invite-ledgerName'>{this.state.ledgerName}</Text>
           <Text className='invite-success'>创建成功</Text>
           <Image src={invite} />
-          <View>
+          <View className='invite-btn'>
             <Button hover-class='none' openType='share'>
               <Text>邀请好友</Text>
             </Button>
+            <View
+              hover-class='none'
+              className='invite-back-btn'
+              onClick={() => {
+                Taro.switchTab({ url: "/pages/index/index" });
+              }}
+            >
+              <Text>返回</Text>
+            </View>
           </View>
         </View>
       </View>
