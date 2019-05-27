@@ -250,7 +250,6 @@ class Bill extends Component {
   }
 
   eventsSwitchPayer(users) {
-    console.log(users);
     this.setState({ users });
   }
 

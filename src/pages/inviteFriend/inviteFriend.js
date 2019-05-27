@@ -18,7 +18,6 @@ class inviteFriend extends Component {
 
   async componentWillMount() {
     const { ledgerId, ledgerName } = this.$router.params;
-    console.log(ledgerId, ledgerName);
     this.setState({ ledgerName });
     const data = await myRequest("/invitation", "POST", { ledgerId });
     if (data !== null) {

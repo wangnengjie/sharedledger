@@ -45,7 +45,6 @@ class modifyBill extends Component {
   }
 
   initialize(page, ledgerId) {
-    console.log(tempBillData);
     const bill = JSON.parse(JSON.stringify(tempBillData));
     let ledger;
     if (page === "index") {
@@ -251,7 +250,6 @@ class modifyBill extends Component {
   }
 
   eventsSwitchPayer(users) {
-    console.log(users);
     this.setState({ users });
   }
 

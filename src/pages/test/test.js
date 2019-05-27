@@ -13,7 +13,6 @@ class Test extends Component {
   }
 
   handleTest(msg) {
-    console.log(this, msg);
     this.setState({ msg });
   }
 

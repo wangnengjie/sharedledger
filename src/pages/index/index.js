@@ -342,7 +342,6 @@ class Index extends Component {
     //取参
     const { ledgerId, bills, run, curtain } = this.state;
     //处理账本
-    // console.log(run);
     const _run = run.concat();
     const i = _run.findIndex(e => e.ledgerId === ledgerId);
     _run.unshift(..._run.splice(i, 1));

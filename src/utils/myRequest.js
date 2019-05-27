@@ -10,7 +10,6 @@ const myLogin = async auth => {
     data: { code }
   })
     .then(res => {
-      console.log(res.data);
       return res.data;
     })
     .catch(err => console.log(err));
@@ -47,7 +46,6 @@ const myRequest = async (url, method, body = {}) => {
   })
     .then(res => res.data)
     .catch(err => console.log(err));
-  console.log(data);
   switch (data.errcode) {
     case 0:
       return data;
