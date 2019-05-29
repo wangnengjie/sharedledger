@@ -164,6 +164,7 @@ class Index extends Component {
   }
 
   async handleOnSure() {
+    if (!globalData.auth) return;
     const type = this.state.curtain.type;
     switch (type) {
       case 1:
