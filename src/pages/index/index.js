@@ -99,7 +99,7 @@ class Index extends Component {
     if (isDone) return;
     let run = this.state.run.concat();
     run = run.filter(e => e.ledgerId !== ledgerId);
-    this.handleSwitchLedger(run[0].ledgerId);
+    if (run.length) this.handleSwitchLedger(run[0].ledgerId);
     this.setState({ run });
   }
 
