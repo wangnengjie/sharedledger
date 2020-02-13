@@ -17,9 +17,7 @@ class BillCard extends Component {
       JSON.parse(JSON.stringify(this.props.billInfo))
     );
     Taro.navigateTo({
-      url: `/pages/modifyBill/modifyBill?page=${this.props.page}&ledgerId=${
-        this.props.ledgerId
-      }`
+      url: `/pages/modifyBill/modifyBill?page=${this.props.page}&ledgerId=${this.props.ledgerId}`
     });
   }
 
@@ -29,8 +27,8 @@ class BillCard extends Component {
       payer,
       users,
       money,
-      category,
-      description
+      category
+      // description
     } = this.props.billInfo;
 
     const { done, onDelete } = this.props;
@@ -40,52 +38,52 @@ class BillCard extends Component {
     time = `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日`;
 
     return (
-      <View className='BillCard'>
-        <View className='BillCard-billDate'>
+      <View className="BillCard">
+        <View className="BillCard-billDate">
           <Text>{time}</Text>
         </View>
 
-        <View className='BillCard-infoBox'>
-          <View className='infoBox-label'>
+        <View className="BillCard-infoBox">
+          <View className="infoBox-label">
             <Text>付款人</Text>
           </View>
-          <View className='infoBox-info'>
+          <View className="infoBox-info">
             <UserBox nickName={payer.nickName} isPayer />
           </View>
         </View>
 
-        <View className='BillCard-infoBox'>
-          <View className='infoBox-label'>
+        <View className="BillCard-infoBox">
+          <View className="infoBox-label">
             <Text>参与人</Text>
           </View>
-          <View className='infoBox-info'>
+          <View className="infoBox-info">
             {users.map(user => (
               <UserBox key={user.uid} nickName={user.nickName} selected />
             ))}
           </View>
         </View>
 
-        <View className='BillCard-infoBox'>
-          <View className='infoBox-label'>
+        <View className="BillCard-infoBox">
+          <View className="infoBox-label">
             <Text>金额</Text>
           </View>
-          <View className='infoBox-info'>
-            <Text className='infoText-money'>{money / 100}元</Text>
+          <View className="infoBox-info">
+            <Text className="infoText-money">{money / 100}元</Text>
           </View>
         </View>
 
         {category.categoryId !== 0 && (
-          <View className='BillCard-infoBox'>
-            <View className='infoBox-label'>
+          <View className="BillCard-infoBox">
+            <View className="infoBox-label">
               <Text>用途</Text>
             </View>
-            <View className='infoBox-info'>
+            <View className="infoBox-info">
               <UseBox category={category} />
             </View>
           </View>
         )}
 
-        {description !== "" && (
+        {/* {description !== "" && (
           <View className='BillCard-infoBox'>
             <View className='infoBox-label'>
               <Text>备注</Text>
@@ -94,14 +92,14 @@ class BillCard extends Component {
               <Text className='infoText-comment'>{description}</Text>
             </View>
           </View>
-        )}
+        )} */}
 
         {!done && uid === payer.uid && (
-          <View className='BillCard-fixLine'>
-            <View className='fixLine-fix' onClick={this.handleFix}>
+          <View className="BillCard-fixLine">
+            <View className="fixLine-fix" onClick={this.handleFix}>
               <Text>修改</Text>
             </View>
-            <View className='fixLine-delete' onClick={onDelete}>
+            <View className="fixLine-delete" onClick={onDelete}>
               <Text>删除</Text>
             </View>
           </View>

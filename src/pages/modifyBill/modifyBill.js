@@ -277,22 +277,22 @@ class modifyBill extends Component {
 
     return (
       <View>
-        <View className='bill-header-bar'>
-          <View className='bill-header-bcg' />
-          <View className='bill-header-ledgerName'>
+        <View className="bill-header-bar">
+          <View className="bill-header-bcg" />
+          <View className="bill-header-ledgerName">
             <Text>{ledgerName}</Text>
           </View>
         </View>
 
-        <View className='session bill-input-bar'>
-          <View className='bill-title'>
+        <View className="session bill-input-bar">
+          <View className="bill-title">
             <Text>请输入金额</Text>
           </View>
-          <View className='bill-input-input'>
+          <View className="bill-input-input">
             <View>
               <Input
-                type='digit'
-                cursor-spacing='15'
+                type="digit"
+                cursor-spacing="15"
                 onInput={this.handleMoneyInput}
                 value={tempBillData.money / 100}
               />
@@ -301,11 +301,11 @@ class modifyBill extends Component {
           </View>
         </View>
 
-        <View className='session bill-payer-bar'>
-          <View className='bill-title'>
+        <View className="session bill-payer-bar">
+          <View className="bill-title">
             <Text>付款人</Text>
           </View>
-          <View className='bill-payer-box'>
+          <View className="bill-payer-box">
             {users.slice(0, 3).map(user => {
               return (
                 <UserBox
@@ -320,7 +320,7 @@ class modifyBill extends Component {
             })}
             {users.length > 3 && (
               <ExtendBtn
-                theme='payer'
+                theme="payer"
                 extended={false}
                 onClick={this.navigateToUserList}
               />
@@ -328,11 +328,11 @@ class modifyBill extends Component {
           </View>
         </View>
 
-        <View className='session bill-users-bar'>
-          <View className='bill-title'>
+        <View className="session bill-users-bar">
+          <View className="bill-title">
             <Text>参与人</Text>
           </View>
-          <View className='bill-users-box'>
+          <View className="bill-users-box">
             {users.slice(0, extendUsers ? users.length : 7).map(user => {
               return (
                 <UserBox
@@ -346,7 +346,7 @@ class modifyBill extends Component {
             })}
             {users.length > 7 && (
               <ExtendBtn
-                theme='user'
+                theme="user"
                 extended={extendUsers}
                 onClick={this.extendUsers}
               />
@@ -354,11 +354,11 @@ class modifyBill extends Component {
           </View>
         </View>
 
-        <View className='session bill-category-bar'>
-          <View className='bill-title'>
+        <View className="session bill-category-bar">
+          <View className="bill-title">
             <Text>用途（非必选）</Text>
             <View
-              className='bill-category-setting'
+              className="bill-category-setting"
               onClick={this.handleSetting}
             >
               <Image src={categorySetting ? settingSelected : setting} />
@@ -367,7 +367,7 @@ class modifyBill extends Component {
               </Text>
             </View>
           </View>
-          <View className='bill-category-box'>
+          <View className="bill-category-box">
             {categories
               .slice(0, extendCategories ? categories.length : 7)
               .map((category, index) => {
@@ -388,15 +388,15 @@ class modifyBill extends Component {
               })}
             {categories.length > 7 && !categorySetting && (
               <ExtendBtn
-                theme='category'
+                theme="category"
                 extended={extendCategories}
                 onClick={this.extendCategories}
               />
             )}
             {temp && (
-              <View className='temp-category-btn'>
+              <View className="temp-category-btn">
                 <Input
-                  maxlength='4'
+                  maxlength="4"
                   focus
                   onInput={this.handleCategoryInput.bind(this)}
                   onBlur={this.handleAddCategory.bind(this)}
@@ -405,7 +405,7 @@ class modifyBill extends Component {
             )}
             {categorySetting && (
               <View
-                className='bill-category-add-btn'
+                className="bill-category-add-btn"
                 onClick={this.handleAddTemp.bind(this)}
               >
                 <Image src={add} />
@@ -414,7 +414,7 @@ class modifyBill extends Component {
           </View>
         </View>
 
-        <View className='session bill-description-bar'>
+        {/* <View className='session bill-description-bar'>
           <View className='bill-title'>
             <Text>备注（非必填）</Text>
           </View>
@@ -425,14 +425,14 @@ class modifyBill extends Component {
               value={tempBillData.description}
             />
           </View>
-        </View>
+        </View> */}
 
-        <View className='bill-btn-bar'>
-          <View className='bill-btn-sure' onClick={this.handleModify}>
+        <View className="bill-btn-bar">
+          <View className="bill-btn-sure" onClick={this.handleModify}>
             <Text>完成</Text>
           </View>
           <View
-            className='bill-btn-cancel'
+            className="bill-btn-cancel"
             onClick={() => Taro.navigateBack({})}
           >
             <Text>取消</Text>
